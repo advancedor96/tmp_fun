@@ -120,6 +120,7 @@
 
 <script>
 import axios from 'axios'
+import dayjs from 'dayjs'
 export default {
   name: 'HelloWorld',
 
@@ -142,20 +143,23 @@ export default {
       time: '',
       text: ''
     }, {
-      date: '2',
+      date: '',
       time: '',
       text: ''
     }, {
-      date: '3',
+      date: '',
       time: '',
       text: ''
     }, {
-      date: '4',
+      date: '',
       time: '',
       text: ''
     }]
 
   }),
+  created () {
+    window.d = dayjs
+  },
   methods: {
     setSeletedDate () {
       this.time_list[this.selected_index].date = this.selected_date
@@ -192,31 +196,28 @@ export default {
       this.time_list.push({ date: '', time: '', text: '' })
     },
     async save () {
-      console.log('click')
-      try {
-        // const res = axios.post('http://api.funplanet.tw/addSession', {
-        //   name: '從前端axios來的',
-        //   year_month: '2022-01-01',
-        //   type: 'axios寶寶故事',
-        //   image: '',
-        //   text: 'axios說明',
-        //   min: '3',
-        //   max: '5',
-        //   time_list: [
-        //     {
-        //       date: '',
-        //       time: '',
-        //       text: ''
-        //     },
-        //     {
-        //       date: '',
-        //       time: '',
-        //       text: ''
-        //     }
-        //   ]
+      const obj = {
+        name: this.name,
+        year_month: dayjs(`${this.year}-${this.month}-01`).format('YYYY-MM-DD'),
+        type: this.type,
+        image: this.image,
+        text: this.text,
+        min: this.min,
+        max: this.max,
+        time_list: this.time_list.map(e => {
+          return {
+            datetime: dayjs(`${e.date} ${e.time}`).format('YYYY-MM-DD HH:mm:ss'),
+            text: e.text
+          }
+        })
 
-        // })
-        // console.log('完成')
+      }
+
+      try {
+        const res = axios.post('http://api.funplanet.tw/addSession', obj)
+        console.log('res', res)
+
+        console.log('完成')
       } catch (err) {
         console.log('err:', err)
       }
