@@ -30,7 +30,6 @@ export default {
   },
   methods: {
     handleClick (item) {
-      console.log('item', item)
       this.$router.push(`/list/${item.session_id}`)
     },
     async load () {
