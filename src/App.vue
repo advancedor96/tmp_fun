@@ -1,27 +1,15 @@
 <template>
   <v-app>
-    <v-app-bar app color="primary" dark>
-    </v-app-bar>
-
+    <div id="nav">
+      <router-link to="/">場次列表</router-link> |
+      <router-link to="/AddSession">新增場次</router-link>
+    </div>
     <v-main>
-      <ListSession />
+    <router-view/>
     </v-main>
   </v-app>
 </template>
 
-<script>
-import AddSession from './components/AddSession'
-import ListSession from './components/ListSession'
+<style>
 
-export default {
-  name: 'App',
-
-  components: {
-    AddSession, ListSession
-  },
-
-  data: () => ({
-    //
-  })
-}
-</script>
+</style>
