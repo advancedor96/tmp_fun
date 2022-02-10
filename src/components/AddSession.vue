@@ -122,7 +122,7 @@
 import axios from 'axios'
 import dayjs from 'dayjs'
 export default {
-  name: 'HelloWorld',
+  name: 'AddSession',
 
   data: () => ({
     name: '',
@@ -139,7 +139,7 @@ export default {
     min: '4',
     max: '6',
     time_list: [{
-      date: '2022-01-01',
+      date: '',
       time: '',
       text: ''
     }, {
@@ -210,15 +210,13 @@ export default {
             text: e.text
           }
         })
-
       }
 
       try {
-        const res = axios.post('http://api.funplanet.tw/addSession', obj)
-        console.log('res', res)
-
-        console.log('完成')
+        const res = await axios.post('http://api.funplanet.tw/addSession', obj)
+        this.$alert('', '新增成功', 'success')
       } catch (err) {
+        this.$alert('', '失敗', 'error')
         console.log('err:', err)
       }
     }
