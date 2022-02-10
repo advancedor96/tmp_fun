@@ -64,24 +64,25 @@
       </v-date-picker>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn
-          text
-          color="primary"
-          @click="showDatePicker = false"
-        >
-          Cancel
-        </v-btn>
-        <v-btn
-          text
-          color="primary"
-          @click="setSeletedDate"
-        >
-          OK
-        </v-btn>
+        <v-btn text color="primary" @click="showDatePicker = false"> Cancel </v-btn>
+        <v-btn text color="primary" @click="setSeletedDate">OK</v-btn>
       </v-card-actions>
-
     </v-card>
-
+  </v-dialog>
+  <v-dialog v-model="showTimePicker" persistent width="290px">
+    <v-card>
+      <v-time-picker
+        ampm-in-title
+        format="ampm"
+        v-model="selected_time"
+        scrollable
+      ></v-time-picker>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn text color="primary" @click="showTimePicker = false"> Cancel </v-btn>
+        <v-btn text color="primary" @click="setSeletedTime">OK</v-btn>
+      </v-card-actions>
+    </v-card>
   </v-dialog>
   <div v-for="(i,idx) in time_list.length" :key="idx" class="d-flex">
 
@@ -98,6 +99,7 @@
       outlined
       dense
       v-model="time_list[idx].time"
+      @click="toggleTimePicker(idx)"
     ></v-text-field>
 
     <v-text-field
@@ -126,9 +128,10 @@ export default {
     year: '2022',
     month: '',
     selected_date: '',
+    selected_time: '',
     selected_index: 0,
     showDatePicker: false,
-    showDialog: false,
+    showTimePicker: false,
     type: '',
     image: [],
     text: '',
@@ -167,6 +170,20 @@ export default {
     toggleDatePicker (i) {
       this.selected_index = i
       this.showDatePicker = true
+    },
+    setSeletedTime () {
+      this.time_list[this.selected_index].time = this.selected_time
+      this.showTimePicker = false
+
+      for (let i = this.selected_index; i < this.time_list.length; i++) {
+        if (this.time_list[i].time === '') {
+          this.time_list[i].time = this.selected_time
+        }
+      }
+    },
+    toggleTimePicker (i) {
+      this.selected_index = i
+      this.showTimePicker = true
     },
     deleteItem (idx) {
       this.time_list.splice(idx, 1)
