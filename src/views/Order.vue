@@ -27,7 +27,7 @@
             <v-chip v-if="min<=e.childList.length && e.childList.length<max " color="green" text-color="white" >成團，尚有{{max - e.childList.length}}名額</v-chip>
             <v-chip v-if="max <= e.childList.length" color="red" text-color="white" >成團，額滿。</v-chip>
           </td>
-          <td>{{   e.childList.join(',')}}</td>
+          <td>{{   e.childList.map(e=>e.child_name).join(',')}}</td>
         </tr>
       </tbody>
     </template>
@@ -80,9 +80,15 @@ export default {
   name: 'Order',
 
   data: () => ({
+    name: '',
+    type: '',
+    year_month: '',
+    image: '',
+    text: '',
     min: 0,
     max: 0,
     timeList: [],
+
     selected_time: [],
     child_list: [''],
     parent_line: '',
@@ -93,32 +99,27 @@ export default {
   }),
   created () {
     window.d = dayjs
-    this.isLoading = true
     this.load()
-    this.loadTimeList()
   },
   methods: {
     deleteItem (idx) {
       this.child_list.splice(idx, 1)
     },
     async load () {
+      this.isLoading = true
       try {
-        const res = await axios.post('http://api.funplanet.tw/getSessionById', {
+        const res = await axios.post('http://api.funplanet.tw/getSessionDetailById', {
           session_id: this.$route.params.s_id
         })
-        const data = res.data[0]
+        const data = res.data
+        this.name = data.name
+        this.type = data.type
+        this.year_month = data.year_month
+        this.image = data.image
+        this.text = data.text
         this.min = data.min
         this.max = data.max
-      } catch (err) {
-        console.log('err', err)
-      }
-    },
-    async loadTimeList () {
-      try {
-        const res = await axios.post('http://api.funplanet.tw/getTimeBySessionId', {
-          session_id: this.$route.params.s_id
-        })
-        this.timeList = res.data.map((e, i) => {
+        this.timeList = data.time_list.map((e, i) => {
           const obj = dayjs(e.datetime)
           return {
             ...e,
@@ -126,31 +127,14 @@ export default {
 
           }
         })
-
-        for (let i = 0; i < this.timeList.length; i++) {
-          await this.addChildList(i)
-        }
+        console.log('timeList', this.timeList)
       } catch (err) {
         console.log('err', err)
       } finally {
         this.isLoading = false
-        console.log('finally')
       }
     },
-    async addChildList (i) {
-      try {
-        this.timeList[i].childList = []
-        const res = await axios.post('http://api.funplanet.tw/getChildByTimeId', {
-          time_id: this.timeList[i].time_id
-        })
-        res.data.forEach(e => {
-          this.timeList[i].childList.push(e.child_name)
-        })
-      } catch (err) {
-        console.log('err', err)
-      } finally {
-      }
-    },
+
     async submit () {
       if (this.selected_time.length === 0 || this.parent_line === '' || this.phone === '') {
         console.log('不可為空')
