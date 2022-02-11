@@ -84,6 +84,7 @@
       </v-card-actions>
     </v-card>
   </v-dialog>
+  <!-- 這裡用 v-for 用 .length 疑似有問題 -->
   <div v-for="(i,idx) in time_list.length" :key="idx" class="d-flex">
 
     <v-text-field
