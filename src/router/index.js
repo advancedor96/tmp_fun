@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import ListSession from '../views/ListSession.vue'
 import AddSession from '../views/AddSession.vue'
+import EditSession from '../views/EditSession.vue'
 import SessionDetail from '../views/SessionDetail.vue'
 import OrderList from '../views/OrderList.vue'
 import Order from '../views/Order.vue'
@@ -24,6 +25,11 @@ const routes = [
     path: '/admin/session_detail/:s_id',
     name: 'SessionDetail',
     component: SessionDetail
+  },
+  {
+    path: '/admin/edit_session/:s_id',
+    name: 'EditSession',
+    component: EditSession
   },
   {
     path: '/OrderList',

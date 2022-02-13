@@ -51,7 +51,7 @@ export default {
       }))
     },
     editItem (sessionId) {
-      console.log('clicked')
+      this.$router.push(`/admin/edit_session/${sessionId}`)
     },
     async deleteItem (sessionId) {
       const r = await this.$fire({

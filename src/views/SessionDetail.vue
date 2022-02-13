@@ -1,8 +1,8 @@
 <template>
 <div>
-  <h1>家長報名</h1>
+  <h1>場次名稱：{{name}}</h1>
   <h2>圖</h2>
-  <h2>說明</h2>
+  <h2>說明：{{text}}</h2>
   <div class="d-flex">
     <h2>報名狀況</h2>
     <h2>人數限制：{{min}} ~ {{max}}</h2>
@@ -57,7 +57,7 @@
             <td>
               <v-tooltip top>
                 <template v-slot:activator="{  on, attrs }">
-                  <v-btn color="primary" icon @click="deleteItem(e.child_id)" v-bind="attrs" v-on="on">
+                  <v-btn color="primary" icon @click="deleteItem(e.child_id, time.time_id)" v-bind="attrs" v-on="on">
                     <v-icon >mdi-delete</v-icon>
                   </v-btn>
                 </template>
@@ -107,7 +107,7 @@ export default {
     await this.load()
   },
   methods: {
-    async deleteItem (childId) {
+    async deleteItem (childId, timeId) {
       const r = await this.$fire({
         title: '確定刪除此小朋友？',
         text: '',
@@ -118,7 +118,8 @@ export default {
       if (r.value === true) {
         try {
           const res = await axios.post('http://api.funplanet.tw/deleteOrderByChildId', {
-            child_id: childId
+            child_id: childId,
+            time_id: timeId
           })
           if (res.status === 200) {
             location.reload()

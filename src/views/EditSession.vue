@@ -1,6 +1,6 @@
 <template>
   <v-container>
-   <h1>新增場次</h1>
+   <h1>編輯場次</h1>
    <v-text-field
       label="場次名稱"
       v-model="name"
@@ -58,7 +58,7 @@
   ></v-text-field>
 
   </div>
-  <v-btn color="primary" @click="addItem">
+  <v-btn color="primary" @click="addItem" disabled>
     新增日期
   </v-btn>
   <v-dialog v-model="showDatePicker" persistent width="290px">
@@ -107,7 +107,7 @@
       dense
       v-model="time_list[idx].text"
     ></v-text-field>
-    <v-btn color="primary" @click="deleteItem(idx)">
+    <v-btn color="primary" @click="deleteItem(idx)" disabled>
       <v-icon>mdi-delete</v-icon>
     </v-btn>
   </div>
@@ -121,9 +121,10 @@
 import axios from 'axios'
 import dayjs from 'dayjs'
 export default {
-  name: 'AddSession',
+  name: 'EditSession',
 
   data: () => ({
+    session_id: '',
     name: '',
     year: '2022',
     month: '',
@@ -137,29 +138,44 @@ export default {
     text: '',
     min: '3',
     max: '6',
-    time_list: [{
-      date: '',
-      time: '',
-      text: ''
-    }, {
-      date: '',
-      time: '',
-      text: ''
-    }, {
-      date: '',
-      time: '',
-      text: ''
-    }, {
-      date: '',
-      time: '',
-      text: ''
-    }]
+    time_list: []
 
   }),
   created () {
     window.d = dayjs
+    this.session_id = this.$route.params.s_id
+    this.load()
   },
   methods: {
+    async load () {
+      try {
+        const res = await axios.post('http://api.funplanet.tw/getSessionDetailById', {
+          session_id: this.session_id
+        })
+        const data = res.data
+
+        this.name = data.name
+        this.year = dayjs(data.year_month).format('YYYY')
+        this.month = dayjs(data.year_month).format('M')
+        this.type = data.type
+        this.image = []
+        this.text = data.text
+        this.min = data.min
+        this.max = data.max
+
+        this.time_list = data.time_list.map((e, i) => {
+          return {
+            time_id: e.time_id,
+            date: dayjs(e.datetime).format('YYYY-MM-DD'),
+            time: dayjs(e.datetime).format('HH:mm'),
+            text: e.text
+          }
+        })
+      } catch (err) {
+        console.log('err', err)
+      } finally {
+      }
+    },
     setSeletedDate () {
       this.time_list[this.selected_index].date = this.selected_date
       this.showDatePicker = false
@@ -172,6 +188,7 @@ export default {
     },
     toggleDatePicker (i) {
       this.selected_index = i
+      this.selected_date = this.time_list[this.selected_index].date
       this.showDatePicker = true
     },
     setSeletedTime () {
@@ -186,6 +203,7 @@ export default {
     },
     toggleTimePicker (i) {
       this.selected_index = i
+      this.selected_time = this.time_list[this.selected_index].time
       this.showTimePicker = true
     },
     deleteItem (idx) {
@@ -196,6 +214,7 @@ export default {
     },
     async save () {
       const obj = {
+        session_id: this.session_id,
         name: this.name,
         year_month: dayjs(`${this.year}-${this.month}-01`).format('YYYY-MM-DD'),
         type: this.type,
@@ -206,15 +225,16 @@ export default {
         time_list: this.time_list.map(e => {
           return {
             datetime: dayjs(`${e.date} ${e.time}`).format('YYYY-MM-DD HH:mm:ss'),
-            text: e.text
+            text: e.text,
+            time_id: e.time_id
           }
         })
       }
-
+      console.log('準備儲存：', obj)
       try {
-        const res = await axios.post('http://api.funplanet.tw/addSession', obj)
-        this.$alert('', '新增成功', 'success').then((e) => {
-          this.$router.push('/admin')
+        const res = await axios.post('http://api.funplanet.tw/updateSession', obj)
+        this.$alert('', '更新成功', 'success').then((e) => {
+          location.reload()
         })
       } catch (err) {
         this.$alert('', '失敗', 'error')
