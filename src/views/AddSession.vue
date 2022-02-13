@@ -45,6 +45,8 @@
     outlined
     dense
     v-model="min"
+    type="number"
+    width="50"
   ></v-text-field>
   ~
   <v-text-field
@@ -52,6 +54,7 @@
     outlined
     dense
     v-model="max"
+    type="number"
   ></v-text-field>
 
   </div>
@@ -60,13 +63,13 @@
   </v-btn>
   <v-dialog v-model="showDatePicker" persistent width="290px">
     <v-card>
-      <v-date-picker v-model="selected_date">
+      <v-date-picker v-model="selected_date" @input="setSeletedDate">
       </v-date-picker>
-      <v-card-actions>
+      <!-- <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn text color="primary" @click="showDatePicker = false"> Cancel </v-btn>
         <v-btn text color="primary" @click="setSeletedDate">OK</v-btn>
-      </v-card-actions>
+      </v-card-actions> -->
     </v-card>
   </v-dialog>
   <v-dialog v-model="showTimePicker" persistent width="290px">
@@ -137,7 +140,7 @@ export default {
     type: '',
     image: [],
     text: '',
-    min: '4',
+    min: '3',
     max: '6',
     time_list: [{
       date: '',
@@ -163,6 +166,8 @@ export default {
   },
   methods: {
     setSeletedDate () {
+      console.log('執行setSeletedDate ')
+
       this.time_list[this.selected_index].date = this.selected_date
       this.showDatePicker = false
 
@@ -215,7 +220,9 @@ export default {
 
       try {
         const res = await axios.post('http://api.funplanet.tw/addSession', obj)
-        this.$alert('', '新增成功', 'success')
+        this.$alert('', '新增成功', 'success').then((e) => {
+          this.$router.push('/admin')
+        })
       } catch (err) {
         this.$alert('', '失敗', 'error')
         console.log('err:', err)
