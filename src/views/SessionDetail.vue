@@ -1,14 +1,14 @@
 <template>
 <v-container>
   <v-img :src="`http://api.funplanet.tw/upload/${image}`" max-width="940" alt="xx" />
-  <div class="text-h5">名稱</div>
+  <div class="text-h4">名稱</div>
   <p class="text-body">{{name}} </p>
-  <div class="text-h5">說明</div>
+  <div class="text-h4">說明</div>
   <p class="text-body" style="white-space: pre-wrap;">{{text}} </p>
-  <div class="text-h5">人數限制</div>
+  <div class="text-h4">人數限制</div>
   <p class="text-body">{{min}} ~ {{max}}</p>
 
-  <div class="text-h5">報名狀況</div>
+  <div class="text-h4">報名狀況</div>
 
   <v-data-table
     :headers="[
@@ -42,7 +42,7 @@
 
   </v-data-table>
 
-  <div class="text-h5 mt-16">資料庫</div>
+  <div class="text-h4 mt-16 font-weight-black mb-4">訂單資料庫</div>
 
   <div v-for="(time, i) in timeList" :key="i" class="mb-16">
     <div class="text-h6 purple darken-2 text-center"><span class="white--text">{{time.datetime}}</span></div>

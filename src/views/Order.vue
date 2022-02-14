@@ -3,13 +3,13 @@
   <OrderPage2 v-if="page===2" :child_list="child_list" :parent_line="parent_line" :phone="phone" />
   <div v-if="page===1">
     <v-img :src="`http://api.funplanet.tw/upload/${image}`" max-width="940"  alt="xx" />
-    <div class="text-h5">報名</div>
+    <div class="text-h4">報名</div>
     <p class="text-body">{{name}} </p>
-    <div class="text-h5">說明</div>
+    <div class="text-h4">說明</div>
     <p class="text-body" style="white-space: pre-wrap;">{{text}} </p>
-    <div class="text-h5">人數限制</div>
+    <div class="text-h4">人數限制</div>
     <p class="text-body">{{min}} ~ {{max}}</p>
-    <div class="text-h5">報名狀況</div>
+    <div class="text-h4">報名狀況</div>
 
     <v-data-table
       :headers="[
@@ -70,7 +70,7 @@
         </tbody>
       </template>
     </v-simple-table> -->
-    <div class="text-h5 mt-5">報名</div>
+    <div class="text-h4 mt-5">報名</div>
 
     <div v-for="(e,i) in timeList" :key="'a'+i" class="d-flex align-center">
         <v-checkbox
