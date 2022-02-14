@@ -1,80 +1,94 @@
 <template>
-  <v-container>
-    <OrderPage2 v-if="page===2" :child_list="child_list" :parent_line="parent_line" :phone="phone" />
-    <div v-if="page===1">
-      <div class="text-h3">家長報名-{{name}}</div>
-      <v-img :src="`http://api.funplanet.tw/upload/${image}`" max-width="940"  alt="xx" />
-      <div class="text-h4" style="white-space: pre-wrap;">說明</div>
-      <p class="text-body">{{text}} </p>
-      <div class="text-h4">人數限制</div>
-      <p class="text-body">{{min}} ~ {{max}}</p>
-      <div class="text-h4">報名狀況</div>
+<v-container>
+  <OrderPage2 v-if="page===2" :child_list="child_list" :parent_line="parent_line" :phone="phone" />
+  <div v-if="page===1">
+    <v-img :src="`http://api.funplanet.tw/upload/${image}`" max-width="940"  alt="xx" />
+    <div class="text-h5">報名</div>
+    <p class="text-body">{{name}} </p>
+    <div class="text-h5">說明</div>
+    <p class="text-body" style="white-space: pre-wrap;">{{text}} </p>
+    <div class="text-h5">人數限制</div>
+    <p class="text-body">{{min}} ~ {{max}}</p>
+    <div class="text-h5">報名狀況</div>
 
-      <v-simple-table>
-        <template v-slot:default>
-          <thead>
-            <tr>
-              <th class="text-left">時間</th>
-              <th class="text-left">備註</th>
-              <th class="text-left">報名狀況</th>
-              <th class="text-left">成員</th>
-            </tr>
-          </thead>
-          <tbody  v-if="!isLoading">
-            <tr v-for="(e,i) in timeList" :key="i">
-              <td>{{ e.datetime }}</td>
-              <td>{{ e.text }}</td>
-              <td>
-                <v-chip v-if="e.childList.length< min" color="orange" text-color="white" >尚未成團，差{{min - e.childList.length}}人</v-chip>
-                <v-chip v-if="min<=e.childList.length && e.childList.length<max " color="green" text-color="white" >成團，尚有{{max - e.childList.length}}名額</v-chip>
-                <v-chip v-if="max <= e.childList.length" color="red" text-color="white" >成團，額滿，可候補</v-chip>
-              </td>
-              <td>{{e.new_childList.join(', ')}}</td>
-            </tr>
-          </tbody>
-        </template>
-      </v-simple-table>
-      <h1>報名</h1>
+    <v-simple-table>
+      <template v-slot:default>
+        <thead>
+          <tr>
+            <th class="text-left">時間</th>
+            <th class="text-left">備註</th>
+            <th class="text-left">報名狀況</th>
+            <th class="text-left">成員</th>
+          </tr>
+        </thead>
+        <tbody  v-if="!isLoading">
+          <tr v-for="(e,i) in timeList" :key="i">
+            <td>{{ e.datetime }}</td>
+            <td>{{ e.text }}</td>
+            <td>
+              <v-chip v-if="e.childList.length< min" color="orange" text-color="white" >尚未成團，差{{min - e.childList.length}}人</v-chip>
+              <v-chip v-if="min<=e.childList.length && e.childList.length<max " color="green" text-color="white" >成團，尚有{{max - e.childList.length}}名額</v-chip>
+              <v-chip v-if="max <= e.childList.length" color="red" text-color="white" >成團，額滿，可候補</v-chip>
+            </td>
+            <td>{{e.new_childList.join(', ')}}</td>
+          </tr>
+        </tbody>
+      </template>
+    </v-simple-table>
+    <div class="text-h5 mt-5">報名</div>
 
-      <div v-for="(e,i) in timeList" :key="'a'+i" class="d-flex align-center">
-          <v-checkbox
-          v-model="selected_time"
-          :label="e.datetime + e.text"
-          :value="e.time_id"
-        ></v-checkbox>
-      </div>
-      <div>
-        <v-btn color="primary" @click="child_list.push('')">
-          新增小朋友
-        </v-btn>
-      </div>
-      <div v-for="(child, idx) in child_list" :key="idx" class="d-flex mt-2">
-        <v-text-field
-          label="小朋友稱呼"
-          outlined
-          dense
-          v-model="child_list[idx]"
-        ></v-text-field>
-        <v-btn outlined color="primary" @click="deleteItem(idx)">
-          <v-icon>mdi-delete</v-icon>
-        </v-btn>
-      </div>
-
+    <div v-for="(e,i) in timeList" :key="'a'+i" class="d-flex align-center">
+        <v-checkbox
+        v-model="selected_time"
+        :label="e.datetime + e.text"
+        :value="e.time_id"
+      ></v-checkbox>
+    </div>
+    <div>
+      <v-btn color="primary" @click="child_list.push('')">
+        新增小朋友
+      </v-btn>
+    </div>
+    <div v-for="(child, idx) in child_list" :key="idx" class="d-flex mt-2">
       <v-text-field
-        label="家長LINE稱呼" outlined dense v-model="parent_line"
+        label="小朋友稱呼"
+        v-model="child_list[idx]"
+        :rules="[val => (val || '').length > 0 || '必填']"
+        outlined
+        dense
+        required
+        :prepend-icon="icon"
+        @click:prepend="changeIcon"
       ></v-text-field>
-      <v-text-field
-        label="電話" outlined dense v-model="phone"
-      ></v-text-field>
-      <v-text-field
-        label="備註" outlined dense v-model="note"
-      ></v-text-field>
-      <v-btn color="primary" @click="submit">
-        下一步
+      <v-btn outlined color="primary" @click="deleteItem(idx)">
+        <v-icon>mdi-delete</v-icon>
       </v-btn>
     </div>
 
-  </v-container>
+    <v-text-field
+      label="家長LINE稱呼" outlined dense v-model="parent_line"
+        :rules="[val => (val || '').length > 0 || '必填']" required
+    ></v-text-field>
+    <v-text-field
+      label="電話" outlined dense v-model="phone"
+       :rules="[val => (val || '').length > 0 || '必填']" required
+    ></v-text-field>
+    <v-text-field
+      label="備註" outlined dense v-model="note"
+    ></v-text-field>
+    <div class="d-flex justify-space-between">
+      <v-btn color="primary" @click="$router.go(-1)"> 上一頁 </v-btn>
+      <v-btn color="primary" @click="submit"> 下一步 </v-btn>
+    </div>
+  </div>
+
+  <v-overlay :value="isLoading">
+    <v-progress-circular
+      indeterminate
+      size="64"
+    ></v-progress-circular>
+  </v-overlay>
+</v-container>
 </template>
 
 <script>
@@ -82,6 +96,7 @@ import axios from 'axios'
 import dayjs from 'dayjs'
 import OrderPage2 from './OrderPage2.vue'
 const mapWeek = ['日', '一', '二', '三', '四', '五', '六']
+const icons = ['mdi-face-man', 'mdi-face-woman', 'mdi-robot', 'mdi-emoticon-devil']
 export default {
   components: { OrderPage2 },
   name: 'Order',
@@ -103,27 +118,28 @@ export default {
     parent_line: '',
     phone: '',
     note: '',
-    isLoading: true
+    isLoading: true,
+    iconIndex: 0
 
   }),
   computed: {
-    // handleChildList: function (achildList) {
-    //   const resultStr = achildList.map((e, cid) => {
-    //     if (this.max <= cid) {
-    //       return e.child_name + '(候補)'
-    //     } else {
-    //       return e.child_name
-    //     }
-    //   }).join(', ')
-    //   return resultStr
-    // }
+    icon () {
+      return icons[this.iconIndex]
+    }
   },
+
   created () {
     window.d = dayjs
     this.session_id = this.$route.params.s_id
     this.load()
   },
   methods: {
+    changeIcon () {
+      this.iconIndex === icons.length - 1
+        ? this.iconIndex = 0
+        : this.iconIndex++
+    },
+
     deleteItem (idx) {
       this.child_list.splice(idx, 1)
     },
@@ -160,6 +176,7 @@ export default {
         })
       } catch (err) {
         console.log('err', err)
+        this.$toast.warning('load 錯誤')
       } finally {
         this.isLoading = false
       }

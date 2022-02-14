@@ -1,14 +1,14 @@
 <template>
 <v-container>
-
   <v-row class="align-center justify-space-between">
-      <div class="text-h3">場次列表</div>
-      <div class="d-flex" style="width:220px;">
+      <div class="text-h3 mt-3">場次列表</div>
+      <div class="d-flex mt-3" style="max-width:320px;">
         <v-select
           :items="['2021', '2022', '2023', '2024','']"
           v-model="selected_year"
           label="年"
           dense
+          outlined
           class="mr-1"
         ></v-select>
         <v-select
@@ -16,8 +16,10 @@
           v-model="selected_month"
           label="月"
           dense
+          outlined
         ></v-select>
-        <v-btn outlined @click="changeFilter">確定</v-btn>
+        <v-spacer></v-spacer>
+        <v-btn class="ml-2" @click="changeFilter">確定</v-btn>
       </div>
   </v-row>
   <v-data-table
@@ -50,6 +52,12 @@
       </v-card-actions>
     </v-card>
   </div>
+  <v-overlay :value="isLoading">
+    <v-progress-circular
+      indeterminate
+      size="64"
+    ></v-progress-circular>
+  </v-overlay>
 </v-container>
 </template>
 
@@ -67,7 +75,8 @@ export default {
       { text: '月份', value: 'year_month' },
       { text: '縮圖', value: 'image' },
       { text: '動作', value: 'action' }
-    ]
+    ],
+    isLoading: false
 
   }),
   created () {
@@ -91,15 +100,22 @@ export default {
     //   this.$router.push(`/admin/session_detail/${item.session_id}`)
     // },
     async load () {
-      const selectedRes = await axios.post('http://api.funplanet.tw/getSelectedYearMonth')
-      this.selected_year = selectedRes.data.year
-      this.selected_month = selectedRes.data.month
+      try {
+        this.isLoading = true
+        const selectedRes = await axios.post('http://api.funplanet.tw/getSelectedYearMonth')
+        this.selected_year = selectedRes.data.year
+        this.selected_month = selectedRes.data.month
 
-      const res = await axios.get('http://api.funplanet.tw/list')
-      this.sList = res.data.map(e => ({
-        ...e,
-        year_month: e.year_month.substring(0, 7)
-      }))
+        const res = await axios.get('http://api.funplanet.tw/list')
+        this.sList = res.data.map(e => ({
+          ...e,
+          year_month: e.year_month.substring(0, 7)
+        }))
+      } catch (err) {
+        console.log('err', err)
+      } finally {
+        this.isLoading = false
+      }
     },
     editItem (sessionId) {
       this.$router.push(`/admin/edit_session/${sessionId}`)

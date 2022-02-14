@@ -1,14 +1,14 @@
 <template>
-<div>
-  <div class="text-h3">場次名稱：{{name}}</div>
-  <v-divider></v-divider>
+<v-container>
   <v-img :src="`http://api.funplanet.tw/upload/${image}`" max-width="940" alt="xx" />
-  <div class="text-h4">說明</div>
-  <p class="text-body">{{text}} </p>
-  <div class="text-h4">人數限制</div>
+  <div class="text-h5">名稱</div>
+  <p class="text-body">{{name}} </p>
+  <div class="text-h5">說明</div>
+  <p class="text-body" style="white-space: pre-wrap;">{{text}} </p>
+  <div class="text-h5">人數限制</div>
   <p class="text-body">{{min}} ~ {{max}}</p>
 
-  <div class="text-h4">報名狀況</div>
+  <div class="text-h5">報名狀況</div>
 
   <v-simple-table>
     <template v-slot:default>
@@ -34,9 +34,9 @@
       </tbody>
     </template>
   </v-simple-table>
-  <h2 class="mt-4">資料庫</h2>
+  <div class="text-h5 mt-16">資料庫</div>
   <div v-for="(time, i) in timeList" :key="i" class="mt-3">
-    <h3>{{time.datetime}}</h3>
+    <div class="text-h6">{{time.datetime}}</div>
     <v-simple-table dense   >
       <template v-slot:default>
         <thead>
@@ -81,7 +81,13 @@
     </v-simple-table>
 
   </div>
-</div>
+  <v-overlay :value="isLoading">
+    <v-progress-circular
+      indeterminate
+      size="64"
+    ></v-progress-circular>
+  </v-overlay>
+</v-container>
 </template>
 
 <script>
@@ -182,6 +188,7 @@ export default {
         }
       } catch (err) {
         console.log('err', err)
+        this.$toast.warning('抓資料錯誤')
       } finally {
         this.isLoading = false
       }
@@ -194,6 +201,7 @@ export default {
         this.timeList[idx].orderList = res.data
       } catch (err) {
         console.log('err', err)
+        this.$toast.warning('設定時段失敗')
       } finally {
       }
     }

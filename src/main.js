@@ -9,7 +9,7 @@ import 'vue-toast-notification/dist/theme-sugar.css'
 Vue.config.productionTip = false
 Vue.use(VueSimpleAlert)
 Vue.use(VueToast, {
-  duration: 1000
+  duration: 2000, position: 'top-right'
 })
 
 new Vue({

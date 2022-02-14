@@ -117,6 +117,12 @@
   <div>
     <v-btn color="primary" @click="save"> 儲存 </v-btn>
   </div>
+  <v-overlay :value="isLoading">
+    <v-progress-circular
+      indeterminate
+      size="64"
+    ></v-progress-circular>
+  </v-overlay>
   </v-container>
 </template>
 
@@ -157,7 +163,8 @@ export default {
       date: '',
       time: '',
       text: ''
-    }]
+    }],
+    isLoading: false
 
   }),
   created () {
@@ -202,6 +209,7 @@ export default {
       this.time_list.push({ date: '', time: '', text: '' })
     },
     async save () {
+      this.isLoading = true
       const imgObj = new FormData()
       imgObj.append('sendimage', this.image)
       try {
@@ -211,6 +219,8 @@ export default {
         }
       } catch (err) {
         console.log('err:', err)
+        this.$toast.warning('圖片上傳失敗')
+        return
       }
 
       const obj = {
@@ -237,6 +247,8 @@ export default {
       } catch (err) {
         this.$alert('', '失敗', 'error')
         console.log('err:', err)
+      } finally {
+        this.isLoading = false
       }
     }
   }

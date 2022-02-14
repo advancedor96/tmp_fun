@@ -123,6 +123,12 @@
   <div>
     <v-btn color="primary" @click="save"> 儲存 </v-btn>
   </div>
+  <v-overlay :value="isLoading">
+    <v-progress-circular
+      indeterminate
+      size="64"
+    ></v-progress-circular>
+  </v-overlay>
   </v-container>
 </template>
 
@@ -148,7 +154,8 @@ export default {
     text: '',
     min: '3',
     max: '6',
-    time_list: []
+    time_list: [],
+    isLoading: true
 
   }),
   created () {
@@ -162,6 +169,7 @@ export default {
     },
     async load () {
       try {
+        this.isLoading = true
         const res = await axios.post('http://api.funplanet.tw/getSessionDetailById', {
           session_id: this.session_id
         })
@@ -187,7 +195,9 @@ export default {
         })
       } catch (err) {
         console.log('err', err)
+        this.$toast.warning('load 錯誤')
       } finally {
+        this.isLoading = false
       }
     },
     setSeletedDate () {
