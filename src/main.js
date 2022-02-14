@@ -3,9 +3,14 @@ import App from './App.vue'
 import vuetify from './plugins/vuetify'
 import VueSimpleAlert from 'vue-simple-alert'
 import router from './router'
+import VueToast from 'vue-toast-notification'
+import 'vue-toast-notification/dist/theme-sugar.css'
 
 Vue.config.productionTip = false
 Vue.use(VueSimpleAlert)
+Vue.use(VueToast, {
+  duration: 1000
+})
 
 new Vue({
   vuetify,

@@ -2,14 +2,14 @@
   <v-container>
     <OrderPage2 v-if="page===2" :child_list="child_list" :parent_line="parent_line" :phone="phone" />
     <div v-if="page===1">
-      <h1>家長報名</h1>
+      <div class="text-h3">家長報名-{{name}}</div>
       <v-img :src="`http://api.funplanet.tw/upload/${image}`"  alt="xx" />
-      <h2>說明</h2>
-      <div class="d-flex">
-        <h2>報名狀況</h2>
-        <h2>人數限制：{{min}} ~ {{max}}</h2>
+      <div class="text-h4" style="white-space: pre-wrap;">說明</div>
+      <p class="text-body">{{text}} </p>
+      <div class="text-h4">人數限制</div>
+      <p class="text-body">{{min}} ~ {{max}}</p>
+      <div class="text-h4">報名狀況</div>
 
-      </div>
       <v-simple-table>
         <template v-slot:default>
           <thead>
@@ -29,7 +29,7 @@
                 <v-chip v-if="min<=e.childList.length && e.childList.length<max " color="green" text-color="white" >成團，尚有{{max - e.childList.length}}名額</v-chip>
                 <v-chip v-if="max <= e.childList.length" color="red" text-color="white" >成團，額滿，可候補</v-chip>
               </td>
-              <td>{{   e.childList.map(e=>e.child_name).join(',')}}</td>
+              <td>{{e.new_childList.join(', ')}}</td>
             </tr>
           </tbody>
         </template>
@@ -39,10 +39,9 @@
       <div v-for="(e,i) in timeList" :key="'a'+i" class="d-flex align-center">
           <v-checkbox
           v-model="selected_time"
-          :label="e.datetime"
+          :label="e.datetime + e.text"
           :value="e.time_id"
         ></v-checkbox>
-        <div>{{ e.text }}</div>
       </div>
       <v-btn color="primary" @click="child_list.push('')">
         新增小朋友
@@ -104,6 +103,18 @@ export default {
     isLoading: true
 
   }),
+  computed: {
+    // handleChildList: function (achildList) {
+    //   const resultStr = achildList.map((e, cid) => {
+    //     if (this.max <= cid) {
+    //       return e.child_name + '(候補)'
+    //     } else {
+    //       return e.child_name
+    //     }
+    //   }).join(', ')
+    //   return resultStr
+    // }
+  },
   created () {
     window.d = dayjs
     this.load()
@@ -119,6 +130,7 @@ export default {
           session_id: this.$route.params.s_id
         })
         const data = res.data
+
         this.name = data.name
         this.type = data.type
         this.year_month = data.year_month
@@ -128,13 +140,20 @@ export default {
         this.max = data.max
         this.timeList = data.time_list.map((e, i) => {
           const obj = dayjs(e.datetime)
+          const childArr = e.childList.map((child, cid) => {
+            if (this.max <= cid) {
+              return child.child_name + '(候補)'
+            } else {
+              return child.child_name
+            }
+          })
           return {
             ...e,
-            datetime: `${obj.format('MM/DD')}(${mapWeek[obj.day()]}) ${obj.format('HH:mm')}`
+            datetime: `${obj.format('MM/DD')}(${mapWeek[obj.day()]}) ${obj.format('HH:mm')}`,
+            new_childList: childArr
 
           }
         })
-        console.log('timeList', this.timeList)
       } catch (err) {
         console.log('err', err)
       } finally {
@@ -143,15 +162,25 @@ export default {
     },
 
     async submit () {
-      if (this.selected_time.length === 0 || this.parent_line === '' || this.phone === '') {
-        console.log('不可為空')
+      if (this.selected_time.length === 0) {
+        this.$toast.warning('未選擇時段')
         return
       }
-      this.child_list.forEach(e => {
-        if (e === '') {
-          console.log('不可為空')
+      for (let i = 0; i < this.child_list.length; i++) {
+        if (this.child_list[i].trim() === '') {
+          this.$toast.warning('小朋友欄位不可為空')
+          return
         }
-      })
+      }
+      if (this.parent_line === '') {
+        this.$toast.warning('未填line名稱')
+        return
+      }
+      if (this.phone === '') {
+        this.$toast.warning('未填電話')
+        return
+      }
+
       const obj = {
         parent_line: this.parent_line,
         phone: this.phone,
