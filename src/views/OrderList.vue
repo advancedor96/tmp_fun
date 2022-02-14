@@ -4,14 +4,14 @@
       <div class="text-h3">(客人)場次列表</div>
       <div class="d-flex" style="width:220px;">
         <v-select
-          :items="['2021', '2022', '2023', '2024']"
+          :items="['2021', '2022', '2023', '2024', '']"
           v-model="selected_year"
           label="年"
           dense
           class="mr-1"
         ></v-select>
         <v-select
-          :items="['01','02','03','04','05','06','07','08','09','10','11','12' ]"
+          :items="['01','02','03','04','05','06','07','08','09','10','11','12', '' ]"
           v-model="selected_month"
           label="月"
           dense

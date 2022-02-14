@@ -14,7 +14,8 @@ const routes = [
   {
     path: '/admin',
     name: 'ListSession',
-    component: ListSession
+    component: ListSession,
+    alias: '/'
   },
   {
     path: '/admin/AddSession',
