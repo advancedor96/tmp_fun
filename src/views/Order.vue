@@ -87,7 +87,7 @@ export default {
   name: 'Order',
 
   data: () => ({
-    page: 2,
+    page: 1,
     name: '',
     type: '',
     year_month: '',
