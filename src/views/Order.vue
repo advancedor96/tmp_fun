@@ -45,20 +45,20 @@
       ></v-checkbox>
     </div>
     <div>
-      <v-btn color="primary" @click="child_list.push('')">
+      <v-btn color="primary" @click="child_list.push({ child_name: '', icon: 0 })">
         新增小朋友
       </v-btn>
     </div>
     <div v-for="(child, idx) in child_list" :key="idx" class="d-flex mt-2">
       <v-text-field
         label="小朋友稱呼"
-        v-model="child_list[idx]"
+        v-model="child_list[idx].child_name"
         :rules="[val => (val || '').length > 0 || '必填']"
         outlined
         dense
         required
-        :prepend-icon="icon"
-        @click:prepend="changeIcon"
+        :prepend-icon="icons[child_list[idx].icon]"
+        @click:prepend="changeIcon(idx)"
       ></v-text-field>
       <v-btn outlined color="primary" @click="deleteItem(idx)">
         <v-icon>mdi-delete</v-icon>
@@ -68,9 +68,10 @@
     <v-text-field
       label="家長LINE稱呼" outlined dense v-model="parent_line"
         :rules="[val => (val || '').length > 0 || '必填']" required
+        prepend-icon="mdi-human-female"
     ></v-text-field>
     <v-text-field
-      label="電話" outlined dense v-model="phone"
+      label="電話" outlined dense v-model="phone" prepend-icon="mdi-cellphone"
        :rules="[val => (val || '').length > 0 || '必填']" required
     ></v-text-field>
     <v-text-field
@@ -96,7 +97,7 @@ import axios from 'axios'
 import dayjs from 'dayjs'
 import OrderPage2 from './OrderPage2.vue'
 const mapWeek = ['日', '一', '二', '三', '四', '五', '六']
-const icons = ['mdi-face-man', 'mdi-face-woman', 'mdi-robot', 'mdi-emoticon-devil']
+
 export default {
   components: { OrderPage2 },
   name: 'Order',
@@ -114,18 +115,16 @@ export default {
     timeList: [],
 
     selected_time: [],
-    child_list: [''],
+    child_list: [{ child_name: '', icon: 0 }],
     parent_line: '',
     phone: '',
     note: '',
     isLoading: true,
-    iconIndex: 0
+    icons: ['mdi-face-man', 'mdi-face-woman', 'mdi-robot', 'mdi-emoticon-devil']
 
   }),
   computed: {
-    icon () {
-      return icons[this.iconIndex]
-    }
+
   },
 
   created () {
@@ -134,10 +133,13 @@ export default {
     this.load()
   },
   methods: {
-    changeIcon () {
-      this.iconIndex === icons.length - 1
-        ? this.iconIndex = 0
-        : this.iconIndex++
+    changeIcon (idx) {
+      this.child_list[idx].icon === this.icons.length - 1
+        ? this.child_list[idx].icon = 0
+        : this.child_list[idx].icon++
+      // this.iconIndex === icons.length - 1
+      //   ? this.iconIndex = 0
+      //   : this.iconIndex++
     },
 
     deleteItem (idx) {
@@ -188,7 +190,7 @@ export default {
         return
       }
       for (let i = 0; i < this.child_list.length; i++) {
-        if (this.child_list[i].trim() === '') {
+        if (this.child_list[i].child_name.trim() === '') {
           this.$toast.warning('小朋友欄位不可為空')
           return
         }
