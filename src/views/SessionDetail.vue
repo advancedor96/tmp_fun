@@ -1,13 +1,15 @@
 <template>
 <div>
-  <h1>場次名稱：{{name}}</h1>
-  <h2>圖</h2>
-  <h2>說明：{{text}}</h2>
-  <div class="d-flex">
-    <h2>報名狀況</h2>
-    <h2>人數限制：{{min}} ~ {{max}}</h2>
+  <div class="text-h3">場次名稱：{{name}}</div>
+  <v-divider></v-divider>
+  <v-img :src="`http://api.funplanet.tw/upload/${image}`"  alt="xx" />
+  <div class="text-h4">說明</div>
+  <p class="text-body">{{text}} </p>
+  <div class="text-h4">人數限制</div>
+  <p class="text-body">{{min}} ~ {{max}}</p>
 
-  </div>
+  <div class="text-h4">報名狀況</div>
+
   <v-simple-table>
     <template v-slot:default>
       <thead>
@@ -91,6 +93,7 @@ export default {
   name: 'SessionDetail',
 
   data: () => ({
+    session_id: '',
     name: '',
     type: '',
     year_month: '',
@@ -152,11 +155,14 @@ export default {
     },
     async load () {
       this.isLoading = true
+      this.session_id = this.$route.params.s_id
+
       try {
         const res = await axios.post('http://api.funplanet.tw/getSessionDetailById', {
-          session_id: this.$route.params.s_id
+          session_id: this.session_id
         })
         const data = res.data
+
         this.name = data.name
         this.type = data.type
         this.year_month = data.year_month

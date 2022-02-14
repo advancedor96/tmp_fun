@@ -3,7 +3,7 @@
     <OrderPage2 v-if="page===2" :child_list="child_list" :parent_line="parent_line" :phone="phone" />
     <div v-if="page===1">
       <h1>家長報名</h1>
-      <h2>圖</h2>
+      <v-img :src="`http://api.funplanet.tw/upload/${image}`"  alt="xx" />
       <h2>說明</h2>
       <div class="d-flex">
         <h2>報名狀況</h2>

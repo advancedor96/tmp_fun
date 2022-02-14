@@ -30,32 +30,38 @@
     label="上傳封面"
     filled
     prepend-icon="mdi-camera"
-    :value="image"
+    @change="Preview_image"
+    v-model="image"
   ></v-file-input>
+  <v-img :src="url" />
   <v-textarea
     outlined
     name="input-7-4"
     label="文字說明"
     v-model="text"
+    class="mt-6"
   ></v-textarea>
-  <div class="d-flex">
-  <h3>每場人數範圍：</h3>
-  <v-text-field
-    label="最小值"
-    outlined
-    dense
-    v-model="min"
-    type="number"
-    width="50"
-  ></v-text-field>
-  ~
-  <v-text-field
-    label="最大值"
-    outlined
-    dense
-    v-model="max"
-    type="number"
-  ></v-text-field>
+  <div class="d-flex align-start">
+  <div class="text-body">每場人數範圍：</div>
+  <div class="d-flex" style="width: 200px;">
+    <v-text-field
+      label="最小值"
+      outlined
+      dense
+      v-model="min"
+      type="number"
+      width="50"
+    ></v-text-field>
+    ~
+    <v-text-field
+      label="最大值"
+      outlined
+      dense
+      v-model="max"
+      type="number"
+    ></v-text-field>
+
+  </div>
 
   </div>
   <v-btn color="primary" @click="addItem" disabled>
@@ -111,9 +117,9 @@
       <v-icon>mdi-delete</v-icon>
     </v-btn>
   </div>
-  <v-btn color="primary" @click="save">
-    儲存
-  </v-btn>
+  <div>
+    <v-btn color="primary" @click="save"> 儲存 </v-btn>
+  </div>
   </v-container>
 </template>
 
@@ -134,7 +140,8 @@ export default {
     showDatePicker: false,
     showTimePicker: false,
     type: '',
-    image: [],
+    url: null,
+    image: null,
     text: '',
     min: '3',
     max: '6',
@@ -147,6 +154,9 @@ export default {
     this.load()
   },
   methods: {
+    Preview_image () {
+      this.url = URL.createObjectURL(this.image)
+    },
     async load () {
       try {
         const res = await axios.post('http://api.funplanet.tw/getSessionDetailById', {
@@ -158,7 +168,8 @@ export default {
         this.year = dayjs(data.year_month).format('YYYY')
         this.month = dayjs(data.year_month).format('M')
         this.type = data.type
-        this.image = []
+        this.image = data.image
+        this.url = `http://api.funplanet.tw/upload/${this.image}`
         this.text = data.text
         this.min = data.min
         this.max = data.max
@@ -213,12 +224,22 @@ export default {
       this.time_list.push({ date: '', time: '', text: '' })
     },
     async save () {
+      const imgObj = new FormData()
+      imgObj.append('sendimage', this.image)
+      try {
+        const res = await axios.post('http://api.funplanet.tw/api-file-upload.php', imgObj, { 'Content-Type': 'multipart/form-data' })
+        if (res.status === 200) {
+        }
+      } catch (err) {
+        console.log('err:', err)
+      }
+
       const obj = {
         session_id: this.session_id,
         name: this.name,
         year_month: dayjs(`${this.year}-${this.month}-01`).format('YYYY-MM-DD'),
         type: this.type,
-        image: this.image,
+        image: this.image.name,
         text: this.text,
         min: this.min,
         max: this.max,
@@ -230,7 +251,6 @@ export default {
           }
         })
       }
-      console.log('準備儲存：', obj)
       try {
         const res = await axios.post('http://api.funplanet.tw/updateSession', obj)
         this.$alert('', '更新成功', 'success').then((e) => {

@@ -29,17 +29,20 @@
   <v-file-input
     label="上傳封面"
     filled
+    @change="Preview_image"
     prepend-icon="mdi-camera"
-    :value="image"
+    v-model="image"
   ></v-file-input>
+  <v-img :src="url" />
   <v-textarea
     outlined
     name="input-7-4"
     label="文字說明"
     v-model="text"
+    class="mt-6"
   ></v-textarea>
   <div class="d-flex">
-  <h3>每場人數範圍：</h3>
+  <div class="text-body">每場人數範圍：</div>
   <v-text-field
     label="最小值"
     outlined
@@ -111,9 +114,9 @@
       <v-icon>mdi-delete</v-icon>
     </v-btn>
   </div>
-  <v-btn color="primary" @click="save">
-    儲存
-  </v-btn>
+  <div>
+    <v-btn color="primary" @click="save"> 儲存 </v-btn>
+  </div>
   </v-container>
 </template>
 
@@ -133,7 +136,8 @@ export default {
     showDatePicker: false,
     showTimePicker: false,
     type: '',
-    image: [],
+    url: null,
+    image: null,
     text: '',
     min: '3',
     max: '6',
@@ -160,6 +164,9 @@ export default {
     window.d = dayjs
   },
   methods: {
+    Preview_image () {
+      this.url = URL.createObjectURL(this.image)
+    },
     setSeletedDate () {
       this.time_list[this.selected_index].date = this.selected_date
       this.showDatePicker = false
@@ -195,11 +202,22 @@ export default {
       this.time_list.push({ date: '', time: '', text: '' })
     },
     async save () {
+      const imgObj = new FormData()
+      imgObj.append('sendimage', this.image)
+      try {
+        const res = await axios.post('http://api.funplanet.tw/api-file-upload.php', imgObj, { 'Content-Type': 'multipart/form-data' })
+        if (res.status === 200) {
+          console.log('ok, res', res)
+        }
+      } catch (err) {
+        console.log('err:', err)
+      }
+
       const obj = {
         name: this.name,
         year_month: dayjs(`${this.year}-${this.month}-01`).format('YYYY-MM-DD'),
         type: this.type,
-        image: this.image,
+        image: this.image.name,
         text: this.text,
         min: this.min,
         max: this.max,
