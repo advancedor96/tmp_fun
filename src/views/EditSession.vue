@@ -33,7 +33,10 @@
     @change="Preview_image"
     v-model="image"
   ></v-file-input>
-  <v-img :src="url" />
+  <div class="d-flex justify-center">
+    <v-img :src="url" max-width="940"  />
+
+  </div>
   <v-textarea
     outlined
     name="input-7-4"
@@ -64,7 +67,7 @@
   </div>
 
   </div>
-  <v-btn color="primary" @click="addItem" disabled>
+  <v-btn color="primary" @click="addItem">
     新增日期
   </v-btn>
   <v-dialog v-model="showDatePicker" persistent width="290px">
@@ -113,7 +116,7 @@
       dense
       v-model="time_list[idx].text"
     ></v-text-field>
-    <v-btn color="primary" @click="deleteItem(idx)" disabled>
+    <v-btn color="primary" @click="deleteItem(idx)" >
       <v-icon>mdi-delete</v-icon>
     </v-btn>
   </div>
@@ -224,14 +227,19 @@ export default {
       this.time_list.push({ date: '', time: '', text: '' })
     },
     async save () {
-      const imgObj = new FormData()
-      imgObj.append('sendimage', this.image)
-      try {
-        const res = await axios.post('http://api.funplanet.tw/api-file-upload.php', imgObj, { 'Content-Type': 'multipart/form-data' })
-        if (res.status === 200) {
+      if (this.image instanceof File) {
+        // 當
+        console.log('上傳新圖片')
+
+        const imgObj = new FormData()
+        imgObj.append('sendimage', this.image)
+        try {
+          const res = await axios.post('http://api.funplanet.tw/api-file-upload.php', imgObj, { 'Content-Type': 'multipart/form-data' })
+          if (res.status === 200) {
+          }
+        } catch (err) {
+          console.log('err:', err)
         }
-      } catch (err) {
-        console.log('err:', err)
       }
 
       const obj = {
@@ -239,7 +247,7 @@ export default {
         name: this.name,
         year_month: dayjs(`${this.year}-${this.month}-01`).format('YYYY-MM-DD'),
         type: this.type,
-        image: this.image.name,
+        image: typeof (this.image) === 'string' ? this.image : this.image.name,
         text: this.text,
         min: this.min,
         max: this.max,

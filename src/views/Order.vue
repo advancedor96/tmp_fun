@@ -3,7 +3,7 @@
     <OrderPage2 v-if="page===2" :child_list="child_list" :parent_line="parent_line" :phone="phone" />
     <div v-if="page===1">
       <div class="text-h3">家長報名-{{name}}</div>
-      <v-img :src="`http://api.funplanet.tw/upload/${image}`"  alt="xx" />
+      <v-img :src="`http://api.funplanet.tw/upload/${image}`" max-width="940"  alt="xx" />
       <div class="text-h4" style="white-space: pre-wrap;">說明</div>
       <p class="text-body">{{text}} </p>
       <div class="text-h4">人數限制</div>
@@ -87,6 +87,7 @@ export default {
   name: 'Order',
 
   data: () => ({
+    session_id: '',
     page: 1,
     name: '',
     type: '',
@@ -119,6 +120,7 @@ export default {
   },
   created () {
     window.d = dayjs
+    this.session_id = this.$route.params.s_id
     this.load()
   },
   methods: {
@@ -129,7 +131,7 @@ export default {
       this.isLoading = true
       try {
         const res = await axios.post('http://api.funplanet.tw/getSessionDetailById', {
-          session_id: this.$route.params.s_id
+          session_id: this.session_id
         })
         const data = res.data
 
@@ -184,6 +186,7 @@ export default {
       }
 
       const obj = {
+        session_id: this.session_id,
         parent_line: this.parent_line,
         phone: this.phone,
         childList: this.child_list.map(e => ({ child_name: e })),

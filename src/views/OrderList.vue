@@ -20,16 +20,29 @@
       </div>
   </v-row>
   <v-data-table
-    :headers="headers"
+    :headers="showHeader"
     :items="sList"
     class="elevation-1"
     :items-per-page="-1"
     @click:row="handleClick"
+    hide-default-footer
+    v-show="!$vuetify.breakpoint.xsOnly"
   >
     <template v-slot:[`item.image`]="{ item }">
-      <v-img :src="`http://api.funplanet.tw/upload/${item.image}`" width="100" alt="xx" />
+      <v-img :src="`http://api.funplanet.tw/upload/${item.image}`" max-width="100" alt="xx" />
     </template>
   </v-data-table>
+  <div v-show="$vuetify.breakpoint.xsOnly">
+    <v-card elevation="2" v-for="(item, i) in sList" :key="i" class="mt-4">
+      <v-img
+        :src="`http://api.funplanet.tw/upload/${item.image}`"
+         max-width="940"
+      ></v-img>
+      <v-card-actions>
+        <v-btn color="deep-purple lighten-2" text @click="handleClick" > 詳情 </v-btn>
+      </v-card-actions>
+    </v-card>
+  </div>
 </v-container>
 </template>
 
@@ -49,8 +62,21 @@ export default {
     ]
 
   }),
+  computed: {
+    showHeader () {
+      if (this.$vuetify.breakpoint.xsOnly) {
+        return [
+          { text: '名稱', value: 'name' },
+          { text: '縮圖', value: 'image' }
+        ]
+      } else {
+        return this.headers
+      }
+    }
+  },
   created () {
     this.load()
+    window.w = this
   },
   methods: {
     async changeFilter () {

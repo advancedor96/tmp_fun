@@ -2,7 +2,7 @@
 <div>
   <div class="text-h3">場次名稱：{{name}}</div>
   <v-divider></v-divider>
-  <v-img :src="`http://api.funplanet.tw/upload/${image}`"  alt="xx" />
+  <v-img :src="`http://api.funplanet.tw/upload/${image}`" max-width="940" alt="xx" />
   <div class="text-h4">說明</div>
   <p class="text-body">{{text}} </p>
   <div class="text-h4">人數限制</div>
@@ -65,15 +65,14 @@
                 </template>
                 <span>刪除此小朋友</span>
               </v-tooltip>
-              <v-tooltip top>
+              <!-- <v-tooltip top>
                 <template v-slot:activator="{ on, attrs}">
                   <v-btn color="red" icon @click="deleteOrder(e.order_id)" v-bind="attrs" v-on="on">
                     <v-icon >mdi-delete</v-icon>
                   </v-btn>
                 </template>
                 <span>刪除相關訂單</span>
-              </v-tooltip>
-
+              </v-tooltip> -->
             </td>
 
           </tr>
@@ -132,27 +131,27 @@ export default {
         }
       }
     },
-    async deleteOrder (orderId) {
-      const r = await this.$fire({
-        title: '確定刪除此小朋友的同一筆訂單？',
-        text: '',
-        type: 'warning',
-        confirmButtonText: '確認',
-        showCancelButton: true
-      })
-      if (r.value === true) {
-        try {
-          const res = await axios.post('http://api.funplanet.tw/deleteOrderByOrderId', {
-            order_id: orderId
-          })
-          if (res.status === 200) {
-            location.reload()
-          }
-        } catch (err) {
-          console.log('err', err)
-        }
-      }
-    },
+    // async deleteOrder (orderId) {
+    //   const r = await this.$fire({
+    //     title: '確定刪除此小朋友的同一筆訂單？',
+    //     text: '',
+    //     type: 'warning',
+    //     confirmButtonText: '確認',
+    //     showCancelButton: true
+    //   })
+    //   if (r.value === true) {
+    //     try {
+    //       const res = await axios.post('http://api.funplanet.tw/deleteOrderByOrderId', {
+    //         order_id: orderId
+    //       })
+    //       if (res.status === 200) {
+    //         location.reload()
+    //       }
+    //     } catch (err) {
+    //       console.log('err', err)
+    //     }
+    //   }
+    // },
     async load () {
       this.isLoading = true
       this.session_id = this.$route.params.s_id

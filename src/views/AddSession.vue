@@ -33,7 +33,7 @@
     prepend-icon="mdi-camera"
     v-model="image"
   ></v-file-input>
-  <v-img :src="url" />
+  <v-img :src="url" max-width="940"  />
   <v-textarea
     outlined
     name="input-7-4"

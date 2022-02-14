@@ -28,7 +28,7 @@
     @click:row="handleClick"
   >
     <template v-slot:[`item.image`]="{ item }">
-      <v-img :src="`http://api.funplanet.tw/upload/${item.image}`" width="100" alt="xx" />
+      <v-img :src="`http://api.funplanet.tw/upload/${item.image}`" max-width="100" alt="xx" />
     </template>
     <template v-slot:[`item.action`]="{ item }">
       <v-btn color="primary" icon @click.stop="editItem(item.session_id)">
@@ -82,7 +82,6 @@ export default {
     },
     async load () {
       const selectedRes = await axios.post('http://api.funplanet.tw/getSelectedYearMonth')
-      console.log('selectedRes', selectedRes)
       this.selected_year = selectedRes.data.year
       this.selected_month = selectedRes.data.month
 
