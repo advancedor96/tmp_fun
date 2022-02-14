@@ -26,7 +26,7 @@
     :items="sList"
     class="elevation-1"
     :items-per-page="-1"
-    @click:row="$router.push(`/list/${item.session_id}`)"
+    @click:row="handleClick"
     hide-default-footer
     v-show="!$vuetify.breakpoint.xsOnly"
   >

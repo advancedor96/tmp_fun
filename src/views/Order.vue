@@ -11,7 +11,31 @@
     <p class="text-body">{{min}} ~ {{max}}</p>
     <div class="text-h5">報名狀況</div>
 
-    <v-simple-table>
+    <v-data-table
+      :headers="[
+        { text: '時間', value: 'datetime' },
+        { text: '備註', value: 'text' },
+        { text: '報名狀況', value: 'situation' },
+        { text: '成員', value: 'member' }
+      ]"
+      :items="timeList"
+      class="elevation-2"
+      :items-per-page="-1"
+      hide-default-footer
+    >
+      <template v-slot:[`item.situation`]="{ item }">
+        <v-img :src="`http://api.funplanet.tw/upload/${item.image}`" max-width="100" alt="xx" />
+        <v-chip v-if="item.childList.length< min" color="orange" text-color="white" >尚未成團，差{{min - item.childList.length}}人</v-chip>
+        <v-chip v-if="min<=item.childList.length && item.childList.length<max " color="green" text-color="white" >成團，尚有{{max - item.childList.length}}名額</v-chip>
+        <v-chip v-if="max <= item.childList.length" color="red" text-color="white" >成團，額滿，可候補</v-chip>
+      </template>
+      <template v-slot:[`item.member`]="{ item }">
+        {{   item.new_childList.join(',')}}
+      </template>
+
+    </v-data-table>
+
+    <!-- <v-simple-table>
       <template v-slot:default>
         <thead>
           <tr>
@@ -34,7 +58,7 @@
           </tr>
         </tbody>
       </template>
-    </v-simple-table>
+    </v-simple-table> -->
     <div class="text-h5 mt-5">報名</div>
 
     <div v-for="(e,i) in timeList" :key="'a'+i" class="d-flex align-center">
@@ -162,7 +186,6 @@ export default {
         this.min = data.min
         this.max = data.max
         this.timeList = data.time_list.map((e, i) => {
-          const obj = dayjs(e.datetime)
           const childArr = e.childList.map((child, cid) => {
             if (this.max <= cid) {
               return child.child_name + '(候補)'
@@ -170,6 +193,7 @@ export default {
               return child.child_name
             }
           })
+          const obj = dayjs(e.datetime)
           return {
             ...e,
             datetime: `${obj.format('MM/DD')}(${mapWeek[obj.day()]}) ${obj.format('HH:mm')}`,
