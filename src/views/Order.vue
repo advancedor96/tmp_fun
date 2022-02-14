@@ -45,7 +45,10 @@
       ></v-checkbox>
     </div>
     <div>
-      <v-btn color="primary" @click="child_list.push({ child_name: '', icon: 0 })">
+      <v-btn outlined color="primary" @click="child_list.push({ child_name: '', icon: 0 })">
+        <v-icon dark left  >
+          mdi-plus
+        </v-icon>
         新增小朋友
       </v-btn>
     </div>
@@ -60,7 +63,7 @@
         :prepend-icon="icons[child_list[idx].icon]"
         @click:prepend="changeIcon(idx)"
       ></v-text-field>
-      <v-btn outlined color="primary" @click="deleteItem(idx)">
+      <v-btn icon color="primary" @click="deleteItem(idx)">
         <v-icon>mdi-delete</v-icon>
       </v-btn>
     </div>
@@ -74,11 +77,9 @@
       label="電話" outlined dense v-model="phone" prepend-icon="mdi-cellphone"
        :rules="[val => (val || '').length > 0 || '必填']" required
     ></v-text-field>
-    <v-text-field
-      label="備註" outlined dense v-model="note"
-    ></v-text-field>
+    <v-text-field label="備註" outlined dense v-model="note" prepend-icon="mdi-information-outline"></v-text-field>
     <div class="d-flex justify-space-between">
-      <v-btn color="primary" @click="$router.go(-1)"> 上一頁 </v-btn>
+      <v-btn outlined color="primary" @click="$router.go(-1)"> 上一步 </v-btn>
       <v-btn color="primary" @click="submit"> 下一步 </v-btn>
     </div>
   </div>
@@ -208,7 +209,7 @@ export default {
         session_id: this.session_id,
         parent_line: this.parent_line,
         phone: this.phone,
-        childList: this.child_list.map(e => ({ child_name: e })),
+        childList: this.child_list,
         timeIdList: this.selected_time.map(e => ({ time_id: e })),
         note: this.note
       }
@@ -216,6 +217,7 @@ export default {
         const res = await axios.post('http://api.funplanet.tw/addOrder', obj)
         if (res.status === 200) {
           this.page = 2
+          this.$toast.success('送出資料')
         }
       } catch (err) {
         this.$alert('', '失敗', 'error')
