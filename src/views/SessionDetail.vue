@@ -23,40 +23,25 @@
     hide-default-footer
   >
     <template v-slot:[`item.situation`]="{ item }">
-      <v-img :src="`http://api.funplanet.tw/upload/${item.image}`" max-width="100" alt="xx" />
-      <v-chip v-if="item.childList.length< min" color="orange" text-color="white" >尚未成團，差{{min - item.childList.length}}人</v-chip>
-      <v-chip v-if="min<=item.childList.length && item.childList.length<max " color="green" text-color="white" >成團，尚有{{max - item.childList.length}}名額</v-chip>
-      <v-chip v-if="max <= item.childList.length" color="red" text-color="white" >成團，額滿，可候補</v-chip>
+      <div v-if="item.childList.length< min" class="d-flex align-center">
+         <v-sheet color="orange" width="20" height="20" class="rounded-circle"></v-sheet>
+        <span class="ml-2">尚未成團，差{{min - item.childList.length}}人</span>
+      </div>
+      <div v-if="min<=item.childList.length && item.childList.length<max " class="d-flex align-center">
+         <v-sheet color="green" width="20" height="20" class="rounded-circle"></v-sheet>
+        <span class="ml-2">成團，尚有{{max - item.childList.length}}名額</span>
+      </div>
+      <div v-if="max <= item.childList.length" class="d-flex align-center">
+         <v-sheet color="red" width="20" height="20" class="rounded-circle"></v-sheet>
+        <span class="ml-2">成團，額滿，可候補</span>
+      </div>
     </template>
     <template v-slot:[`item.member`]="{ item }">
       {{   item.new_childList.join(',')}}
     </template>
 
   </v-data-table>
-  <!-- <v-simple-table>
-    <template v-slot:default>
-      <thead>
-        <tr>
-          <th class="text-left">時間</th>
-          <th class="text-left">備註</th>
-          <th class="text-left">報名狀況</th>
-          <th class="text-left">成員</th>
-        </tr>
-      </thead>
-      <tbody  v-if="!isLoading">
-        <tr v-for="(e,i) in timeList" :key="i">
-          <td>{{ e.datetime }}</td>
-          <td>{{ e.text }}</td>
-          <td>
-            <v-chip v-if="e.childList.length< min" color="orange" text-color="white" >尚未成團，差{{min - e.childList.length}}人</v-chip>
-            <v-chip v-if="min<=e.childList.length && e.childList.length<max " color="green" text-color="white" >成團，尚有{{max - e.childList.length}}名額</v-chip>
-            <v-chip v-if="max <= e.childList.length" color="red" text-color="white" >成團，額滿，可候補</v-chip>
-          </td>
-          <td>{{   e.childList.map(e=>e.child_name).join(',')}}</td>
-        </tr>
-      </tbody>
-    </template>
-  </v-simple-table> -->
+
   <div class="text-h5 mt-16">資料庫</div>
   <div v-for="(time, i) in timeList" :key="i" class="mt-3">
     <div class="text-h6">{{time.datetime}}</div>
@@ -88,14 +73,6 @@
                 </template>
                 <span>刪除此小朋友</span>
               </v-tooltip>
-              <!-- <v-tooltip top>
-                <template v-slot:activator="{ on, attrs}">
-                  <v-btn color="red" icon @click="deleteOrder(e.order_id)" v-bind="attrs" v-on="on">
-                    <v-icon >mdi-delete</v-icon>
-                  </v-btn>
-                </template>
-                <span>刪除相關訂單</span>
-              </v-tooltip> -->
             </td>
 
           </tr>

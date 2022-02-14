@@ -24,10 +24,21 @@
       hide-default-footer
     >
       <template v-slot:[`item.situation`]="{ item }">
-        <v-img :src="`http://api.funplanet.tw/upload/${item.image}`" max-width="100" alt="xx" />
-        <v-chip v-if="item.childList.length< min" color="orange" text-color="white" >尚未成團，差{{min - item.childList.length}}人</v-chip>
+        <div v-if="item.childList.length< min" class="d-flex align-center">
+          <v-sheet color="orange" width="20" height="20" class="rounded-circle"></v-sheet>
+          <span class="ml-2">尚未成團，差{{min - item.childList.length}}人</span>
+        </div>
+        <div v-if="min<=item.childList.length && item.childList.length<max " class="d-flex align-center">
+          <v-sheet color="green" width="20" height="20" class="rounded-circle"></v-sheet>
+          <span class="ml-2">成團，尚有{{max - item.childList.length}}名額</span>
+        </div>
+        <div v-if="max <= item.childList.length" class="d-flex align-center">
+          <v-sheet color="red" width="20" height="20" class="rounded-circle"></v-sheet>
+          <span class="ml-2">成團，額滿，可候補</span>
+        </div>
+        <!-- <v-chip v-if="item.childList.length< min" color="orange" text-color="white" >尚未成團，差{{min - item.childList.length}}人</v-chip>
         <v-chip v-if="min<=item.childList.length && item.childList.length<max " color="green" text-color="white" >成團，尚有{{max - item.childList.length}}名額</v-chip>
-        <v-chip v-if="max <= item.childList.length" color="red" text-color="white" >成團，額滿，可候補</v-chip>
+        <v-chip v-if="max <= item.childList.length" color="red" text-color="white" >成團，額滿，可候補</v-chip> -->
       </template>
       <template v-slot:[`item.member`]="{ item }">
         {{   item.new_childList.join(',')}}
