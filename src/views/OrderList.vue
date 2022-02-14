@@ -20,11 +20,11 @@
       </div>
   </v-row>
   <v-data-table
-    :headers="showHeader"
+    :headers="headers"
     :items="sList"
     class="elevation-1"
     :items-per-page="-1"
-    @click:row="handleClick"
+    @click:row="$router.push(`/list/${item.session_id}`)"
     hide-default-footer
     v-show="!$vuetify.breakpoint.xsOnly"
   >
@@ -39,7 +39,7 @@
          max-width="940"
       ></v-img>
       <v-card-actions>
-        <v-btn color="deep-purple lighten-2" text @click="handleClick" > 詳情 </v-btn>
+        <v-btn color="deep-purple" text @click="$router.push(`/list/${item.session_id}`)" > 詳情 </v-btn>
       </v-card-actions>
     </v-card>
   </div>
@@ -62,21 +62,8 @@ export default {
     ]
 
   }),
-  computed: {
-    showHeader () {
-      if (this.$vuetify.breakpoint.xsOnly) {
-        return [
-          { text: '名稱', value: 'name' },
-          { text: '縮圖', value: 'image' }
-        ]
-      } else {
-        return this.headers
-      }
-    }
-  },
   created () {
     this.load()
-    window.w = this
   },
   methods: {
     async changeFilter () {
@@ -97,7 +84,6 @@ export default {
     },
     async load () {
       const selectedRes = await axios.post('http://api.funplanet.tw/getSelectedYearMonth')
-      console.log('selectedRes', selectedRes)
       this.selected_year = selectedRes.data.year
       this.selected_month = selectedRes.data.month
 

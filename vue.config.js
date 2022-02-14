@@ -3,5 +3,8 @@ module.exports = {
     'vuetify'
   ],
   productionSourceMap: false,
-  publicPath: '/'
+  publicPath: '/',
+  devServer: {
+    disableHostCheck: true
+  }
 }

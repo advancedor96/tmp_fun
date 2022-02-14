@@ -25,21 +25,31 @@
     :items="sList"
     class="elevation-1"
     :items-per-page="-1"
-    @click:row="handleClick"
+     v-show="!$vuetify.breakpoint.xsOnly"
   >
     <template v-slot:[`item.image`]="{ item }">
       <v-img :src="`http://api.funplanet.tw/upload/${item.image}`" max-width="100" alt="xx" />
     </template>
     <template v-slot:[`item.action`]="{ item }">
-      <v-btn color="primary" icon @click.stop="editItem(item.session_id)">
-        <v-icon >mdi-pencil</v-icon>
-      </v-btn>
-
-      <v-btn color="primary" icon @click.stop="deleteItem(item.session_id)">
-        <v-icon >mdi-delete</v-icon>
-      </v-btn>
+      <v-btn text color="deep-purple" @click="$router.push(`/admin/session_detail/${item.session_id}`)" > 詳情 </v-btn>
+      <v-btn color="deep-purple" text @click.stop="editItem(item.session_id)">修改</v-btn>
+      <v-btn color="pink" text @click.stop="deleteItem(item.session_id)">刪除</v-btn>
     </template>
   </v-data-table>
+  <div v-show="$vuetify.breakpoint.xsOnly">
+    <v-card elevation="2" v-for="(item, i) in sList" :key="i" class="mt-4">
+      <v-img
+        :src="`http://api.funplanet.tw/upload/${item.image}`"
+         max-width="940"
+      ></v-img>
+      <v-card-actions>
+        <v-btn text color="deep-purple" @click="$router.push(`/admin/session_detail/${item.session_id}`)" > 詳情 </v-btn>
+        <v-btn color="deep-purple" text @click.stop="editItem(item.session_id)">修改</v-btn>
+        <v-spacer></v-spacer>
+        <v-btn color="pink" text @click.stop="deleteItem(item.session_id)">刪除</v-btn>
+      </v-card-actions>
+    </v-card>
+  </div>
 </v-container>
 </template>
 
@@ -77,9 +87,9 @@ export default {
         console.log('err', err)
       }
     },
-    handleClick (item) {
-      this.$router.push(`/admin/session_detail/${item.session_id}`)
-    },
+    // handleClick (item) {
+    //   this.$router.push(`/admin/session_detail/${item.session_id}`)
+    // },
     async load () {
       const selectedRes = await axios.post('http://api.funplanet.tw/getSelectedYearMonth')
       this.selected_year = selectedRes.data.year
