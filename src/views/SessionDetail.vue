@@ -43,9 +43,37 @@
   </v-data-table>
 
   <div class="text-h5 mt-16">資料庫</div>
-  <div v-for="(time, i) in timeList" :key="i" class="mt-3">
-    <div class="text-h6">{{time.datetime}}</div>
-    <v-simple-table dense   >
+
+  <div v-for="(time, i) in timeList" :key="i" class="mb-16">
+    <div class="text-h6 purple darken-2 text-center"><span class="white--text">{{time.datetime}}</span></div>
+    <v-data-table
+      v-if="!isLoading"
+      :headers="[
+        { text: '小朋友稱呼', value: 'child_name' },
+        { text: '家長LINE稱呼', value: 'parent_line' },
+        { text: '家長手機', value: 'phone' },
+        { text: '報名時間', value: 'created_at' },
+        { text: '備註', value: 'note' },
+        { text: '動作', value: 'action' }
+      ]"
+      :items="time.orderList"
+      class="elevation-1"
+      :items-per-page="-1"
+      hide-default-footer
+    >
+      <template v-slot:[`item.action`]="{ item }">
+        <v-tooltip top>
+          <template v-slot:activator="{  on, attrs }">
+            <v-btn color="primary" icon @click="deleteItem(item.child_id, time.time_id)" v-bind="attrs" v-on="on">
+              <v-icon >mdi-delete</v-icon>
+            </v-btn>
+          </template>
+          <span>刪除此小朋友</span>
+        </v-tooltip>
+      </template>
+    </v-data-table>
+
+    <!-- <v-simple-table dense>
       <template v-slot:default>
         <thead>
           <tr>
@@ -78,7 +106,7 @@
           </tr>
         </tbody>
       </template>
-    </v-simple-table>
+    </v-simple-table> -->
 
   </div>
   <v-overlay :value="isLoading">
