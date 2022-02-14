@@ -43,10 +43,12 @@
           :value="e.time_id"
         ></v-checkbox>
       </div>
-      <v-btn color="primary" @click="child_list.push('')">
-        新增小朋友
-      </v-btn>
-      <div v-for="(child, idx) in child_list" :key="idx" class="d-flex">
+      <div>
+        <v-btn color="primary" @click="child_list.push('')">
+          新增小朋友
+        </v-btn>
+      </div>
+      <div v-for="(child, idx) in child_list" :key="idx" class="d-flex mt-2">
         <v-text-field
           label="小朋友稱呼"
           outlined
@@ -85,7 +87,7 @@ export default {
   name: 'Order',
 
   data: () => ({
-    page: 1,
+    page: 2,
     name: '',
     type: '',
     year_month: '',
