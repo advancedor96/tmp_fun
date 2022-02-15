@@ -1,28 +1,30 @@
 <template>
   <v-container>
    <h1>新增場次</h1>
-   <v-text-field
-      label="場次名稱"
-      v-model="name"
-    ></v-text-field>
+   <v-text-field label="場次名稱" v-model="name" outlined></v-text-field>
     <div class="d-flex">
       <v-select
         :items="['2021', '2022', '2023', '2024']"
         v-model="year"
         label="年"
         dense
+        outlined
+        class="mr-2"
       ></v-select>
       <v-select
         :items="['1','2','3','4','5','6','7','8','9','10','11','12' ]"
         v-model="month"
         label="月"
         dense
+        outlined
+        class="mr-2"
       ></v-select>
       <v-select
         :items="['寶寶','招牌']"
         v-model="type"
         label="類型"
         dense
+        outlined
       ></v-select>
     </div>
 
@@ -43,22 +45,24 @@
   ></v-textarea>
   <div class="d-flex">
   <div class="text-body">每場人數範圍：</div>
-  <v-text-field
-    label="最小值"
-    outlined
-    dense
-    v-model="min"
-    type="number"
-    width="50"
-  ></v-text-field>
-  ~
-  <v-text-field
-    label="最大值"
-    outlined
-    dense
-    v-model="max"
-    type="number"
-  ></v-text-field>
+  <div class="d-flex" style="width: 200px;">
+    <v-text-field
+      label="最小值"
+      outlined
+      dense
+      v-model="min"
+      type="number"
+      width="50"
+    ></v-text-field>
+    ~
+    <v-text-field
+      label="最大值"
+      outlined
+      dense
+      v-model="max"
+      type="number"
+    ></v-text-field>
+  </div>
 
   </div>
   <v-btn color="primary" @click="addItem">
@@ -94,6 +98,8 @@
       dense
       v-model="time_list[idx].date"
       @click="toggleDatePicker(idx)"
+      class="mr-2"
+      style="max-width: 120px;"
     ></v-text-field>
 
     <v-text-field
@@ -102,6 +108,8 @@
       dense
       v-model="time_list[idx].time"
       @click="toggleTimePicker(idx)"
+      class="mr-2"
+      style="max-width: 120px;"
     ></v-text-field>
 
     <v-text-field
@@ -110,7 +118,7 @@
       dense
       v-model="time_list[idx].text"
     ></v-text-field>
-    <v-btn color="primary" @click="deleteItem(idx)">
+    <v-btn color="primary" icon @click="deleteItem(idx)">
       <v-icon>mdi-delete</v-icon>
     </v-btn>
   </div>
@@ -209,6 +217,18 @@ export default {
       this.time_list.push({ date: '', time: '', text: '' })
     },
     async save () {
+      if (this.image || this.month || this.type) {
+        this.$toast.warning('欄位不可為空')
+        return
+      }
+
+      for (let i = 0; i < this.time_list.length; i++) {
+        if (this.time_list[i].date === '' || this.time_list[i].time) {
+          this.$toast.warning('日期或時間欄位不可為空')
+          return
+        }
+      }
+
       this.isLoading = true
       const imgObj = new FormData()
       imgObj.append('sendimage', this.image)

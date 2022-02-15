@@ -11,18 +11,22 @@
         v-model="year"
         label="年"
         dense
+        outlined
+        class="mr-2"
       ></v-select>
       <v-select
         :items="['1','2','3','4','5','6','7','8','9','10','11','12' ]"
         v-model="month"
         label="月"
         dense
+        outlined
+        class="mr-2"
       ></v-select>
       <v-select
         :items="['寶寶','招牌']"
         v-model="type"
         label="類型"
-        dense
+        dense outlined
       ></v-select>
     </div>
 
@@ -100,6 +104,8 @@
       dense
       v-model="time_list[idx].date"
       @click="toggleDatePicker(idx)"
+      class="mr-2"
+      style="max-width: 120px;"
     ></v-text-field>
 
     <v-text-field
@@ -108,6 +114,8 @@
       dense
       v-model="time_list[idx].time"
       @click="toggleTimePicker(idx)"
+      class="mr-2"
+      style="max-width: 120px;"
     ></v-text-field>
 
     <v-text-field
@@ -116,7 +124,7 @@
       dense
       v-model="time_list[idx].text"
     ></v-text-field>
-    <v-btn color="primary" @click="deleteItem(idx)" >
+    <v-btn color="primary" icon @click="deleteItem(idx)" >
       <v-icon>mdi-delete</v-icon>
     </v-btn>
   </div>
