@@ -1,6 +1,9 @@
 <template>
 <v-container>
-  <OrderPage2 v-if="page===2" :child_list="child_list" :parent_line="parent_line" :phone="phone" />
+  <OrderPage2 v-if="page===2" :child_list="child_list" :parent_line="parent_line"
+    :phone="phone" :selected_time="selected_time"
+    :timeList="timeList"
+  />
   <div v-if="page===1">
     <v-img :src="`http://api.funplanet.tw/upload/${image}`" max-width="940"  alt="xx" />
     <p class="text-body mt-4" style="white-space: pre-wrap;">{{text}} </p>
@@ -8,7 +11,10 @@
     <v-expansion-panels>
       <v-expansion-panel class="elevation-0">
         <v-expansion-panel-header>
-          <div class="text-h4">報名狀況</div>
+
+          <div class="d-flex text-h4 justify-space-between">報名狀況
+            <span><v-chip color="blue" class="mr-2" outlined>錄取</v-chip><v-chip color="gray" text-color="grey" outlined>候補</v-chip></span>
+          </div>
         </v-expansion-panel-header>
         <v-expansion-panel-content>
           <v-data-table
@@ -62,7 +68,7 @@
         新增小朋友
       </v-btn>
     </div>
-    <v-form ref="form" v-model="valid" lazy-validation >
+    <v-form ref="form" v-model="valid">
       <div v-for="(child, idx) in child_list" :key="idx" class="d-flex mt-2">
         <v-text-field
           label="小朋友稱呼"

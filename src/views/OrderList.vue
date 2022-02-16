@@ -1,7 +1,7 @@
 <template>
 <v-container>
   <v-row class="align-center justify-space-between">
-      <div class="text-h3 mt-3">(客人)場次列表</div>
+      <div class="text-h3 mt-3">場次列表</div>
       <div class="d-flex mt-3" style="width:320px;">
         <v-select
           :items="['2021', '2022', '2023', '2024', '']"
@@ -30,30 +30,6 @@
 
   </v-row>
 
-  <!-- <v-data-table
-    :headers="headers"
-    :items="sList"
-    class="elevation-1"
-    :items-per-page="-1"
-    @click:row="handleClick"
-    hide-default-footer
-    v-show="!$vuetify.breakpoint.xsOnly"
-  >
-    <template v-slot:[`item.image`]="{ item }">
-      <v-img :src="`http://api.funplanet.tw/upload/${item.image}`" max-width="100" alt="xx" />
-    </template>
-  </v-data-table>
-  <div v-show="$vuetify.breakpoint.xsOnly">
-    <v-card elevation="2" v-for="(item, i) in sList" :key="i" class="mt-4">
-      <v-img
-        :src="`http://api.funplanet.tw/upload/${item.image}`"
-         max-width="940"
-      ></v-img>
-      <v-card-actions>
-        <v-btn color="deep-purple" text @click="$router.push(`/list/${item.session_id}`)" > 詳情 </v-btn>
-      </v-card-actions>
-    </v-card>
-  </div> -->
   <v-overlay :value="isLoading">
     <v-progress-circular
       indeterminate
