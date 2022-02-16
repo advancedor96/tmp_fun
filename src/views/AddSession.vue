@@ -217,17 +217,17 @@ export default {
       this.time_list.push({ date: '', time: '', text: '' })
     },
     async save () {
-      if (this.image || this.month || this.type) {
-        this.$toast.warning('欄位不可為空')
-        return
-      }
+      // if (this.image || this.month || this.type) {
+      //   this.$toast.warning('欄位不可為空')
+      //   return
+      // }
 
-      for (let i = 0; i < this.time_list.length; i++) {
-        if (this.time_list[i].date === '' || this.time_list[i].time) {
-          this.$toast.warning('日期或時間欄位不可為空')
-          return
-        }
-      }
+      // for (let i = 0; i < this.time_list.length; i++) {
+      //   if (this.time_list[i].date === '' || this.time_list[i].time) {
+      //     this.$toast.warning('日期或時間欄位不可為空')
+      //     return
+      //   }
+      // }
 
       this.isLoading = true
       const imgObj = new FormData()

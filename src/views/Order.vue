@@ -3,80 +3,54 @@
   <OrderPage2 v-if="page===2" :child_list="child_list" :parent_line="parent_line" :phone="phone" />
   <div v-if="page===1">
     <v-img :src="`http://api.funplanet.tw/upload/${image}`" max-width="940"  alt="xx" />
-    <div class="text-h4">報名</div>
-    <p class="text-body">{{name}} </p>
-    <div class="text-h4">說明</div>
-    <p class="text-body" style="white-space: pre-wrap;">{{text}} </p>
-    <div class="text-h4">人數限制</div>
-    <p class="text-body">{{min}} ~ {{max}}</p>
-    <div class="text-h4">報名狀況</div>
+    <p class="text-body mt-4" style="white-space: pre-wrap;">{{text}} </p>
 
-    <v-data-table
-      :headers="[
-        { text: '時間', value: 'datetime' },
-        { text: '備註', value: 'text' },
-        { text: '報名狀況', value: 'situation' },
-        { text: '成員', value: 'member' }
-      ]"
-      :items="timeList"
-      class="elevation-2"
-      :items-per-page="-1"
-      hide-default-footer
-    >
-      <template v-slot:[`item.situation`]="{ item }">
-        <div v-if="item.childList.length< min" class="d-flex align-center">
-          <v-sheet color="orange" width="20" height="20" class="rounded-circle"></v-sheet>
-          <span class="ml-2">尚未成團，差{{min - item.childList.length}}人</span>
-        </div>
-        <div v-if="min<=item.childList.length && item.childList.length<max " class="d-flex align-center">
-          <v-sheet color="green" width="20" height="20" class="rounded-circle"></v-sheet>
-          <span class="ml-2">成團，尚有{{max - item.childList.length}}名額</span>
-        </div>
-        <div v-if="max <= item.childList.length" class="d-flex align-center">
-          <v-sheet color="red" width="20" height="20" class="rounded-circle"></v-sheet>
-          <span class="ml-2">成團，額滿，可候補</span>
-        </div>
-        <!-- <v-chip v-if="item.childList.length< min" color="orange" text-color="white" >尚未成團，差{{min - item.childList.length}}人</v-chip>
-        <v-chip v-if="min<=item.childList.length && item.childList.length<max " color="green" text-color="white" >成團，尚有{{max - item.childList.length}}名額</v-chip>
-        <v-chip v-if="max <= item.childList.length" color="red" text-color="white" >成團，額滿，可候補</v-chip> -->
-      </template>
-      <template v-slot:[`item.member`]="{ item }">
-        {{   item.new_childList.join(',')}}
-      </template>
+    <v-expansion-panels>
+      <v-expansion-panel class="elevation-0">
+        <v-expansion-panel-header>
+          <div class="text-h4">報名狀況</div>
+        </v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <v-data-table
+            :headers="[
+              { text: '時間', value: 'datetime' },
+              { text: '備註', value: 'text' },
+              { text: '報名狀況', value: 'situation' },
+              { text: '成員', value: 'member' }
+            ]"
+            :items="timeList"
+            class="elevation-2"
+            :items-per-page="-1"
+            hide-default-footer
+          >
+            <template v-slot:[`item.situation`]="{ item }">
+              <div v-if="item.childList.length< min" class="d-flex align-center">
+                <v-sheet color="orange" width="20" height="20" class="rounded-circle"></v-sheet>
+                <span class="ml-2">尚未成團，差{{min - item.childList.length}}人</span>
+              </div>
+              <div v-if="min<=item.childList.length && item.childList.length<max " class="d-flex align-center">
+                <v-sheet color="green" width="20" height="20" class="rounded-circle"></v-sheet>
+                <span class="ml-2">成團，尚有{{max - item.childList.length}}名額</span>
+              </div>
+              <div v-if="max <= item.childList.length" class="d-flex align-center">
+                <v-sheet color="red" width="20" height="20" class="rounded-circle"></v-sheet>
+                <span class="ml-2">成團，額滿，可候補</span>
+              </div>
+            </template>
+            <template v-slot:[`item.member`]="{ item }">
+              {{   item.new_childList.join(',')}}
+            </template>
 
-    </v-data-table>
-
-    <!-- <v-simple-table>
-      <template v-slot:default>
-        <thead>
-          <tr>
-            <th class="text-left">時間</th>
-            <th class="text-left">備註</th>
-            <th class="text-left">報名狀況</th>
-            <th class="text-left">成員</th>
-          </tr>
-        </thead>
-        <tbody  v-if="!isLoading">
-          <tr v-for="(e,i) in timeList" :key="i">
-            <td>{{ e.datetime }}</td>
-            <td>{{ e.text }}</td>
-            <td>
-              <v-chip v-if="e.childList.length< min" color="orange" text-color="white" >尚未成團，差{{min - e.childList.length}}人</v-chip>
-              <v-chip v-if="min<=e.childList.length && e.childList.length<max " color="green" text-color="white" >成團，尚有{{max - e.childList.length}}名額</v-chip>
-              <v-chip v-if="max <= e.childList.length" color="red" text-color="white" >成團，額滿，可候補</v-chip>
-            </td>
-            <td>{{e.new_childList.join(', ')}}</td>
-          </tr>
-        </tbody>
-      </template>
-    </v-simple-table> -->
-    <div class="text-h4 mt-5">報名</div>
+          </v-data-table>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+    </v-expansion-panels>
 
     <div v-for="(e,i) in timeList" :key="'a'+i" class="d-flex align-center">
-        <v-checkbox
-        v-model="selected_time"
-        :label="e.datetime + e.text"
-        :value="e.time_id"
+      <v-checkbox
+          v-model="selected_time"
+          :label="e.datetime + e.text"
+          :value="e.time_id"
       ></v-checkbox>
     </div>
     <div>
@@ -106,11 +80,13 @@
     <v-text-field
       label="家長LINE稱呼" outlined dense v-model="parent_line"
         :rules="[val => (val || '').length > 0 || '必填']" required
-        prepend-icon="mdi-human-female"
+        :prepend-icon="parent_icons[parent_idx]"
+        @click:prepend="changeParentIcon(idx)"
     ></v-text-field>
     <v-text-field
-      label="電話" outlined dense v-model="phone" prepend-icon="mdi-cellphone"
-       :rules="[val => (val || '').length > 0 || '必填']" required
+      label="電話" outlined dense v-model="phone"
+      prepend-icon="mdi-cellphone"
+       :rules="[val => (val || '').length > 0 || '必填', val => val.length === 10 || '手機號碼為10個數字']" required
     ></v-text-field>
     <v-text-field label="備註" outlined dense v-model="note" prepend-icon="mdi-information-outline"></v-text-field>
     <div class="d-flex justify-space-between">
@@ -156,7 +132,9 @@ export default {
     phone: '',
     note: '',
     isLoading: true,
-    icons: ['mdi-face-man', 'mdi-face-woman', 'mdi-robot', 'mdi-emoticon-devil']
+    icons: ['mdi-face-man', 'mdi-face-woman', 'mdi-robot', 'mdi-emoticon-devil'],
+    parent_idx: 0,
+    parent_icons: ['mdi-human-female', 'mdi-google-downasaur']
 
   }),
   computed: {
@@ -169,13 +147,15 @@ export default {
     this.load()
   },
   methods: {
+    changeParentIcon (idx) {
+      this.parent_idx === this.parent_icons.length - 1
+        ? this.parent_idx = 0
+        : this.parent_idx++
+    },
     changeIcon (idx) {
       this.child_list[idx].icon === this.icons.length - 1
         ? this.child_list[idx].icon = 0
         : this.child_list[idx].icon++
-      // this.iconIndex === icons.length - 1
-      //   ? this.iconIndex = 0
-      //   : this.iconIndex++
     },
 
     deleteItem (idx) {
