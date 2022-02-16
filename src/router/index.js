@@ -10,7 +10,8 @@ const routes = [
   {
     path: '/OrderList',
     name: 'OrderList',
-    component: OrderList
+    component: OrderList,
+    alias: '/'
   },
   {
     path: '/list/:s_id',
