@@ -1,24 +1,10 @@
 <template>
 <v-container>
   <v-row class="align-center justify-space-between">
-      <div class="text-h3 mt-3">場次列表</div>
-      <div class="d-flex mt-3" style="width:320px;">
-        <v-select
-          :items="['2021', '2022', '2023', '2024', '']"
-          v-model="selected_year"
-          label="年"
-          dense
-          outlined
-          class="mr-1"
-        ></v-select>
-        <v-select
-          :items="['01','02','03','04','05','06','07','08','09','10','11','12', '' ]"
-          v-model="selected_month"
-          label="月"
-          dense
-          outlined
-        ></v-select>
-        <v-btn  class="ml-2" @click="changeFilter">確定</v-btn>
+      <div class="text-h3 mt-3">{{showMonth}}月場次列表</div>
+      <div class="d-flex mt-3" >
+        <v-btn outlined color="deep-purple" class="ml-2" @click="load">當月</v-btn>
+        <v-btn outlined color="deep-purple" class="ml-2" @click="loadNextMonth">下個月</v-btn>
       </div>
   </v-row>
 
@@ -44,8 +30,6 @@ import axios from 'axios'
 import dayjs from 'dayjs'
 export default {
   data: () => ({
-    selected_year: '2022',
-    selected_month: 2,
     sList: [],
     headers: [
       { text: '名稱', value: 'name' },
@@ -53,41 +37,42 @@ export default {
       { text: '月份', value: 'year_month' },
       { text: '縮圖', value: 'image' }
     ],
-    isLoading: false
+    isLoading: false,
+    dayjsObj: null,
+    showMonth: ''
 
   }),
   created () {
+    this.dayjsObj = dayjs()
+
     this.load()
   },
   methods: {
-    async changeFilter () {
-      try {
-        const res = await axios.post('http://api.funplanet.tw/setSelectedYearMonth', {
-          year: this.selected_year,
-          month: this.selected_month
-        })
-        if (res.status === 200) {
-          location.reload()
-        }
-      } catch (err) {
-        console.log('err', err)
-      }
-    },
     handleClick (item) {
       this.$router.push(`/list/${item.session_id}`)
     },
     async load () {
       try {
         this.isLoading = true
-        const selectedRes = await axios.post('http://api.funplanet.tw/getSelectedYearMonth')
-        this.selected_year = selectedRes.data.year
-        this.selected_month = selectedRes.data.month
 
-        const res = await axios.get('http://api.funplanet.tw/list')
-        this.sList = res.data.map(e => ({
-          ...e,
-          year_month: e.year_month.substring(0, 7)
-        }))
+        const res = await axios.get(`http://api.funplanet.tw/clientList/${this.dayjsObj.format('YYYY')}/${this.dayjsObj.format('MM')}`)
+        this.sList = res.data
+        this.showMonth = this.dayjsObj.format('M')
+      } catch (err) {
+        console.log('err', err)
+        this.$toast.warning('load 錯誤')
+      } finally {
+        this.isLoading = false
+      }
+    },
+    async loadNextMonth () {
+      try {
+        this.isLoading = true
+        const nextMonthDayjsObj = this.dayjsObj.add(1, 'month')
+
+        const res = await axios.get(`http://api.funplanet.tw/clientList/${nextMonthDayjsObj.format('YYYY')}/${nextMonthDayjsObj.format('MM')}`)
+        this.sList = res.data
+        this.showMonth = nextMonthDayjsObj.format('M')
       } catch (err) {
         console.log('err', err)
         this.$toast.warning('load 錯誤')
@@ -95,6 +80,7 @@ export default {
         this.isLoading = false
       }
     }
+
   }
 }
 </script>
