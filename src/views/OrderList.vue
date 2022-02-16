@@ -21,7 +21,16 @@
         <v-btn  class="ml-2" @click="changeFilter">確定</v-btn>
       </div>
   </v-row>
-  <v-data-table
+
+  <v-row class="justify-center">
+    <v-card elevation="2" v-for="(item, i) in sList" :key="i" class="mt-4 mx-2" width="370"
+      @click="$router.push(`/list/${item.session_id}`)">
+      <v-img :src="`http://api.funplanet.tw/upload/${item.image}`" max-width="940"></v-img>
+    </v-card>
+
+  </v-row>
+
+  <!-- <v-data-table
     :headers="headers"
     :items="sList"
     class="elevation-1"
@@ -44,7 +53,7 @@
         <v-btn color="deep-purple" text @click="$router.push(`/list/${item.session_id}`)" > 詳情 </v-btn>
       </v-card-actions>
     </v-card>
-  </div>
+  </div> -->
   <v-overlay :value="isLoading">
     <v-progress-circular
       indeterminate

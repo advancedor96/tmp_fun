@@ -19,9 +19,9 @@
               { text: '成員', value: 'member' }
             ]"
             :items="timeList"
-            class="elevation-2"
             :items-per-page="-1"
             hide-default-footer
+            disable-sort
           >
             <template v-slot:[`item.situation`]="{ item }">
               <div v-if="item.childList.length< min" class="d-flex align-center">
@@ -38,7 +38,8 @@
               </div>
             </template>
             <template v-slot:[`item.member`]="{ item }">
-              {{   item.new_childList.join(',')}}
+              <v-chip v-for="(c, idx) in item.childList.slice(0, max)" :key="idx" color="blue" outlined class="mr-1 mb-1  ">{{c.child_name}}</v-chip>
+              <v-chip v-for="(c, idx) in item.childList.slice(max, item.childList.length)" :key="'g'+idx" color="gray" text-color="grey" outlined class="mr-1">{{c.child_name}}</v-chip>
             </template>
 
           </v-data-table>
@@ -61,38 +62,38 @@
         新增小朋友
       </v-btn>
     </div>
-    <div v-for="(child, idx) in child_list" :key="idx" class="d-flex mt-2">
-      <v-text-field
-        label="小朋友稱呼"
-        v-model="child_list[idx].child_name"
-        :rules="[val => (val || '').length > 0 || '必填']"
-        outlined
-        dense
-        required
-        :prepend-icon="icons[child_list[idx].icon]"
-        @click:prepend="changeIcon(idx)"
-      ></v-text-field>
-      <v-btn icon color="primary" @click="deleteItem(idx)">
-        <v-icon>mdi-delete</v-icon>
-      </v-btn>
-    </div>
+    <v-form ref="form" v-model="valid" lazy-validation >
+      <div v-for="(child, idx) in child_list" :key="idx" class="d-flex mt-2">
+        <v-text-field
+          label="小朋友稱呼"
+          v-model="child_list[idx].child_name"
+          :rules="[val => (val || '').length > 0 || '必填']"
+          outlined
+          dense
+          required
+          :prepend-icon="icons[child_list[idx].icon]"
+          @click:prepend="changeIcon(idx)"
+        ></v-text-field>
+        <v-btn icon color="primary" @click="deleteItem(idx)">
+          <v-icon>mdi-delete</v-icon>
+        </v-btn>
+      </div>
 
-    <v-text-field
-      label="家長LINE稱呼" outlined dense v-model="parent_line"
-        :rules="[val => (val || '').length > 0 || '必填']" required
-        :prepend-icon="parent_icons[parent_idx]"
-        @click:prepend="changeParentIcon(idx)"
-    ></v-text-field>
-    <v-text-field
-      label="電話" outlined dense v-model="phone"
-      prepend-icon="mdi-cellphone"
-       :rules="[val => (val || '').length > 0 || '必填', val => val.length === 10 || '手機號碼為10個數字']" required
-    ></v-text-field>
-    <v-text-field label="備註" outlined dense v-model="note" prepend-icon="mdi-information-outline"></v-text-field>
-    <div class="d-flex justify-space-between">
-      <v-btn outlined color="primary" @click="$router.go(-1)"> 上一步 </v-btn>
-      <v-btn color="primary" @click="submit"> 下一步 </v-btn>
-    </div>
+      <v-text-field label="家長LINE稱呼" outlined dense v-model="parent_line"
+          :rules="[val => (val || '').length > 0 || '必填']" required
+          :prepend-icon="parent_icons[parent_idx]"
+          @click:prepend="changeParentIcon(idx)"
+      ></v-text-field>
+      <v-text-field label="電話" outlined dense v-model="phone"
+        prepend-icon="mdi-cellphone"
+        :rules="[val => (val || '').length > 0 || '必填', val => val.length === 10 || '手機號碼須為10個數字']" required
+      ></v-text-field>
+      <v-text-field label="備註" outlined dense v-model="note" prepend-icon="mdi-information-outline"></v-text-field>
+      <div class="d-flex justify-space-between">
+        <v-btn outlined color="primary" @click="$router.go(-1)"> 上一步 </v-btn>
+        <v-btn color="primary" @click="submit"> 下一步 </v-btn>
+      </div>
+    </v-form>
   </div>
 
   <v-overlay :value="isLoading">
@@ -115,6 +116,7 @@ export default {
   name: 'Order',
 
   data: () => ({
+    valid: true,
     session_id: '',
     page: 1,
     name: '',
@@ -177,19 +179,14 @@ export default {
         this.min = data.min
         this.max = data.max
         this.timeList = data.time_list.map((e, i) => {
-          const childArr = e.childList.map((child, cid) => {
-            if (this.max <= cid) {
-              return child.child_name + '(候補)'
-            } else {
-              return child.child_name
-            }
-          })
+          // const childArr = e.childList.map((child, cid) => {
+          //   if (this.max <= cid) return child.child_name + '(候補)'
+          //   else return child.child_name
+          // })
           const obj = dayjs(e.datetime)
           return {
             ...e,
-            datetime: `${obj.format('MM/DD')}(${mapWeek[obj.day()]}) ${obj.format('HH:mm')}`,
-            new_childList: childArr
-
+            datetime: `${obj.format('MM/DD')}(${mapWeek[obj.day()]}) ${obj.format('HH:mm')}`
           }
         })
       } catch (err) {
@@ -202,23 +199,16 @@ export default {
 
     async submit () {
       if (this.selected_time.length === 0) {
-        this.$toast.warning('未選擇時段')
+        this.$toast.error('未選擇時段')
         return
       }
-      for (let i = 0; i < this.child_list.length; i++) {
-        if (this.child_list[i].child_name.trim() === '') {
-          this.$toast.warning('小朋友欄位不可為空')
-          return
-        }
-      }
-      if (this.parent_line === '') {
-        this.$toast.warning('未填line名稱')
-        return
-      }
-      if (this.phone === '') {
-        this.$toast.warning('未填電話')
-        return
-      }
+
+      this.$refs.form.validate()
+      if (!this.valid) return false
+      // if (this.parent_line === '') {
+      //   this.$toast.warning('未填line名稱')
+      //   return
+      // }
 
       const obj = {
         session_id: this.session_id,

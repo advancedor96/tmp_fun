@@ -20,7 +20,7 @@
 </div>
 
 <div class="d-flex justify-center mt-5">
-  <v-btn color="primary" @click="submit">完成報名</v-btn>
+  <v-btn color="primary" @click="submit">點我看報名狀況</v-btn>
 </div>
 </v-container>
 </template>
