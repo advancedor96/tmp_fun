@@ -58,6 +58,8 @@
           v-model="selected_time"
           :label="e.datetime + e.text"
           :value="e.time_id"
+          dense
+          style="height:35px;"
       ></v-checkbox>
     </div>
     <div>
