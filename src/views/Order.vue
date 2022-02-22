@@ -241,3 +241,12 @@ export default {
   }
 }
 </script>
+<style scoped>
+.v-data-table ::v-deep .v-data-table__wrapper .v-data-table__mobile-row{
+  min-height: 24px;
+}
+::v-deep tr.v-data-table__mobile-table-row{
+  margin-top: 18px;
+}
+
+</style>
