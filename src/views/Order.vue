@@ -145,7 +145,7 @@ export default {
     isLoading: true,
     icons: ['mdi-face-man', 'mdi-face-woman', 'mdi-robot', 'mdi-emoticon-devil'],
     parent_idx: 0,
-    parent_icons: ['mdi-human-female', 'mdi-google-downasaur']
+    parent_icons: ['mdi-human-female', 'mdi-human-male', 'mdi-google-downasaur']
 
   }),
   computed: {
