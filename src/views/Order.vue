@@ -5,7 +5,7 @@
     :timeList="timeList"
   />
   <div v-if="page===1">
-    <v-img :src="`http://api.funplanet.tw/upload/${image}`" max-width="940"  alt="xx" />
+    <v-img :src="`https://api.funplanet.tw/upload/${image}`" max-width="940"  alt="xx" />
     <p class="text-body mt-4" style="white-space: pre-wrap;">{{text}} </p>
 
     <v-expansion-panels>
@@ -175,7 +175,7 @@ export default {
     async load () {
       this.isLoading = true
       try {
-        const res = await axios.post('http://api.funplanet.tw/getSessionDetailById', {
+        const res = await axios.post('https://api.funplanet.tw/getSessionDetailById', {
           session_id: this.session_id
         })
         const data = res.data
@@ -228,7 +228,7 @@ export default {
         note: this.note
       }
       try {
-        const res = await axios.post('http://api.funplanet.tw/addOrder', obj)
+        const res = await axios.post('https://api.funplanet.tw/addOrder', obj)
         if (res.status === 200) {
           this.page = 2
           this.$toast.success('送出資料')

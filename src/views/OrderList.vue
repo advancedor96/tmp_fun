@@ -11,7 +11,7 @@
   <v-row class="justify-center">
     <v-card elevation="2" v-for="(item, i) in sList" :key="i" class="mt-4 mx-2" width="370"
       @click="$router.push(`/list/${item.session_id}`)">
-      <v-img :src="`http://api.funplanet.tw/upload/${item.image}`" max-width="940"></v-img>
+      <v-img :src="`https://api.funplanet.tw/upload/${item.image}`" max-width="940"></v-img>
     </v-card>
 
   </v-row>
@@ -55,7 +55,7 @@ export default {
       try {
         this.isLoading = true
 
-        const res = await axios.get(`http://api.funplanet.tw/clientList/${this.dayjsObj.format('YYYY')}/${this.dayjsObj.format('MM')}`)
+        const res = await axios.get(`https://api.funplanet.tw/clientList/${this.dayjsObj.format('YYYY')}/${this.dayjsObj.format('MM')}`)
         this.sList = res.data
         this.showMonth = this.dayjsObj.format('M')
       } catch (err) {
@@ -70,7 +70,7 @@ export default {
         this.isLoading = true
         const nextMonthDayjsObj = this.dayjsObj.add(1, 'month')
 
-        const res = await axios.get(`http://api.funplanet.tw/clientList/${nextMonthDayjsObj.format('YYYY')}/${nextMonthDayjsObj.format('MM')}`)
+        const res = await axios.get(`https://api.funplanet.tw/clientList/${nextMonthDayjsObj.format('YYYY')}/${nextMonthDayjsObj.format('MM')}`)
         this.sList = res.data
         this.showMonth = nextMonthDayjsObj.format('M')
       } catch (err) {
