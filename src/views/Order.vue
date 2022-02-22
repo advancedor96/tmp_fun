@@ -62,15 +62,7 @@
           style="height:35px;"
       ></v-checkbox>
     </div>
-    <div>
-      <v-btn outlined color="primary" @click="child_list.push({ child_name: '', icon: 0 })">
-        <v-icon dark left  >
-          mdi-plus
-        </v-icon>
-        新增小朋友
-      </v-btn>
-    </div>
-    <v-form ref="form" v-model="valid">
+    <v-form ref="form" v-model="valid" style="max-width: 400px;">
       <div v-for="(child, idx) in child_list" :key="idx" class="d-flex mt-2">
         <v-text-field
           label="小朋友稱呼"
@@ -81,9 +73,18 @@
           required
           :prepend-icon="icons[child_list[idx].icon]"
           @click:prepend="changeIcon(idx)"
+          style="height: 51px;"
         ></v-text-field>
         <v-btn icon color="primary" @click="deleteItem(idx)">
           <v-icon>mdi-delete</v-icon>
+        </v-btn>
+      </div>
+      <div class="mt-2"   style="margin-left: 33px; margin-bottom: 20px;">
+        <v-btn outlined color="primary" @click="child_list.push({ child_name: '', icon: 0 })">
+          <v-icon dark left  >
+            mdi-plus
+          </v-icon>
+          新增小朋友
         </v-btn>
       </div>
 
