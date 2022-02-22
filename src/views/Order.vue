@@ -12,7 +12,7 @@
       <v-expansion-panel class="elevation-0">
         <v-expansion-panel-header>
 
-          <div class="d-flex text-h4 justify-space-between">報名狀況
+          <div class="d-flex text-h4 justify-space-between">即時名單
             <span><v-chip color="blue" class="mr-2" outlined>錄取</v-chip><v-chip color="gray" text-color="grey" outlined>候補</v-chip></span>
           </div>
         </v-expansion-panel-header>
@@ -56,7 +56,7 @@
     <div v-for="(e,i) in timeList" :key="'a'+i" class="d-flex align-center">
       <v-checkbox
           v-model="selected_time"
-          :label="e.datetime + e.text"
+          :label="e.datetime + ' ' + e.text"
           :value="e.time_id"
           dense
           style="height:35px;"
