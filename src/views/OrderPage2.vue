@@ -26,7 +26,7 @@
 </div>
 <div v-else>
   <div>Line連結：<a href="https://lin.ee/lpYPloz" target="_blank">https://lin.ee/lpYPloz</a></div>
-  <div>或掉QR碼加入。</div>
+  <div>或掃QR碼加入。</div>
   <img style="margin-left: -35px;" width="350" height="350" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPoAAAD6AQAAAACgl2eQAAABvUlEQVR4Xu2Y3W3DMAyECWiAjOTVNZIHEMDej5o6QZG+9gATTiLTXx+upI5Kqj/HrPfMW9yA4wYcN+AQMAvxmEOJVceqWkz5WQyA13pMXPXAosd54N35IIC6kJfGZhhOBGafxMQEA+MsXMyTzANaLWd1fR7F9tv5IMDbf12v3/zhfwM7kPHGkZvtSALkWqUCsesgUO2XBUAdHQybRTJpAvSBLIA7XZ0mvcovOXMUwM/BljuwADPkyS/VDAD41DJLFwGU7zyiAO53l2bxuIWFTOxnoEQA02Od1UGlAGOmoHCX/0MKgA9uGXgXcpz17WQOwC2zdEpZOpno0Lv/KgjgNERpeMpS73F9eETmAJMy2XLstKGuY73qKTMCkHEJG2w5rCVckQOg02RfPJa4avtpFMDS+HbQzbB3wO9kDsAyOV+yL5tAGrAHOl3LY70JsHBJwHS+9TUQkr81zijAQawp2YuZBlCU6oXG4+3yfHwZKAEAXtwvGvFNK3uXGQHofAKApywrhe5WpAFTG5969T49VtIA5TnfaWLDv79FAS11i/ZFT3a0Igjgvb/PMigTwq/FSgA+xQ04bsBxA46/gS/xzQSDURzQNAAAAABJRU5ErkJggg==" alt="">
 </div>
 
@@ -37,8 +37,10 @@
 
 </div>
 
-<div class="d-flex justify-center mt-5">
-  <v-btn color="primary" @click="submit">報名完成</v-btn>
+<div class="d-flex mt-5 justify-space-between" style="max-width: 310px;">
+  <v-btn outlined color="primary" @click="$emit('go_previous')"> 上一步 </v-btn>
+
+  <v-btn color="primary" @click="$emit('the_submit')">報名完成</v-btn>
 </div>
 </v-container>
 </template>

@@ -3,6 +3,8 @@
   <OrderPage2 v-if="page===2" :child_list="child_list" :parent_line="parent_line"
     :phone="phone" :selected_time="selected_time"
     :timeList="timeList"
+    @go_previous="page=1"
+    @the_submit="submit"
   />
   <div v-if="page===1">
     <v-img :src="`https://api.funplanet.tw/upload/${image}`" max-width="940"  alt="xx" />
@@ -100,7 +102,7 @@
       <v-text-field label="備註" outlined dense v-model="note" prepend-icon="mdi-information-outline"></v-text-field>
       <div class="d-flex justify-space-between">
         <v-btn outlined color="primary" @click="$router.go(-1)"> 上一步 </v-btn>
-        <v-btn color="primary" @click="submit"> 下一步 </v-btn>
+        <v-btn color="primary" @click="next"> 下一步 </v-btn>
       </div>
     </v-form>
   </div>
@@ -205,8 +207,7 @@ export default {
         this.isLoading = false
       }
     },
-
-    async submit () {
+    next () {
       if (this.selected_time.length === 0) {
         this.$toast.error('未選擇時段')
         return
@@ -214,10 +215,13 @@ export default {
 
       this.$refs.form.validate()
       if (!this.valid) return false
-      // if (this.parent_line === '') {
-      //   this.$toast.warning('未填line名稱')
-      //   return
-      // }
+      this.page = 2
+    },
+    async submit () {
+      if (this.selected_time.length === 0) {
+        this.$toast.error('未選擇時段')
+        return
+      }
 
       const obj = {
         session_id: this.session_id,
@@ -227,15 +231,20 @@ export default {
         timeIdList: this.selected_time.map(e => ({ time_id: e })),
         note: this.note
       }
+
       try {
+        this.isLoading = true
         const res = await axios.post('https://api.funplanet.tw/addOrder', obj)
         if (res.status === 200) {
-          this.page = 2
-          this.$toast.success('送出資料')
+          this.$fire({ title: '報名成功', type: 'success' }).then(r => {
+            location.reload()
+          })
         }
       } catch (err) {
         this.$alert('', '失敗', 'error')
         console.log('err', err)
+      } finally {
+        this.isLoading = false
       }
     }
   }
