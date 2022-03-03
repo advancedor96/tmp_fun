@@ -2,7 +2,7 @@
 <v-container>
   <div class="text-h4">最後一步！</div>
  <br />
-<div class="text-body" >
+<div class="text-body" style="max-width: 330px;" >
 你報名的日期有：<br />
 <ul>
   <li v-for="(e, i) in showSelectedTime" :key="i">
@@ -35,13 +35,16 @@
 後續的異動與提醒會優先透過Line進行通知，<br />
 緊急狀況才會經由電話聯絡。
 
+  <div class="d-flex mt-5" >
+    <!-- <v-btn outlined color="primary" @click="$emit('go_previous')"> 上一步 </v-btn> -->
+
+    <v-btn color="primary" block @click="check" class="py-2" style="height: 56px;">
+  不知道有沒有報名成功？<br />
+  按這裡回去看即時名單！
+    </v-btn>
+  </div>
 </div>
 
-<div class="d-flex mt-5 justify-space-between" style="max-width: 310px;">
-  <v-btn outlined color="primary" @click="$emit('go_previous')"> 上一步 </v-btn>
-
-  <v-btn color="primary" @click="$emit('the_submit')">報名完成</v-btn>
-</div>
 </v-container>
 </template>
 
@@ -66,10 +69,10 @@ export default {
     })
   },
   methods: {
-    submit () {
-      this.$fire({ title: '報名成功', type: 'success' }).then(r => {
-        location.reload()
-      })
+    check () {
+      location.reload()
+      // this.$fire({ title: '報名成功', type: 'success' }).then(r => {
+      // })
     }
   }
 

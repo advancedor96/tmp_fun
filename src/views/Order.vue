@@ -101,8 +101,8 @@
       ></v-text-field>
       <v-text-field label="備註" outlined dense v-model="note" prepend-icon="mdi-information-outline"></v-text-field>
       <div class="d-flex justify-space-between">
-        <v-btn outlined color="primary" @click="$router.go(-1)"> 上一步 </v-btn>
-        <v-btn color="primary" @click="next"> 下一步 </v-btn>
+        <v-btn outlined color="primary" @click="$router.go(-1)"> 上一頁 </v-btn>
+        <v-btn color="primary" @click="submit"> 送出資料 </v-btn>
       </div>
     </v-form>
   </div>
@@ -207,21 +207,14 @@ export default {
         this.isLoading = false
       }
     },
-    next () {
-      if (this.selected_time.length === 0) {
-        this.$toast.error('未選擇時段')
-        return
-      }
 
-      this.$refs.form.validate()
-      if (!this.valid) return false
-      this.page = 2
-    },
     async submit () {
       if (this.selected_time.length === 0) {
         this.$toast.error('未選擇時段')
         return
       }
+      this.$refs.form.validate()
+      if (!this.valid) return false
 
       const obj = {
         session_id: this.session_id,
@@ -236,9 +229,8 @@ export default {
         this.isLoading = true
         const res = await axios.post('https://api.funplanet.tw/addOrder', obj)
         if (res.status === 200) {
-          this.$fire({ title: '報名成功', type: 'success' }).then(r => {
-            location.reload()
-          })
+          this.$toast.success('報名成功')
+          this.page = 2
         }
       } catch (err) {
         this.$alert('', '失敗', 'error')
