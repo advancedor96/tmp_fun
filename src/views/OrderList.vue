@@ -3,7 +3,7 @@
   <v-row class="align-center justify-center">
       <div class="text-h3 mt-3">{{showMonth}}月場次列表</div>
   </v-row>
-  <v-row class="mt-5 justify-space-between">
+  <v-row class="mt-5 justify-space-between pr-2">
         <v-btn outlined color="deep-purple" class="ml-2" @click="loadPreviousMonth">上個月</v-btn>
         <v-btn outlined color="deep-purple" class="ml-2" @click="load">當月</v-btn>
         <v-btn outlined color="deep-purple" class="ml-2" @click="loadNextMonth">下個月</v-btn>
