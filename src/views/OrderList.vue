@@ -3,7 +3,8 @@
   <v-row class="align-center justify-center">
       <div class="text-h3 mt-3">{{showMonth}}月場次列表</div>
   </v-row>
-  <v-row class="mt-5 justify-center">
+  <v-row class="mt-5 justify-space-between">
+        <v-btn outlined color="deep-purple" class="ml-2" @click="loadPreviousMonth">上個月</v-btn>
         <v-btn outlined color="deep-purple" class="ml-2" @click="load">當月</v-btn>
         <v-btn outlined color="deep-purple" class="ml-2" @click="loadNextMonth">下個月</v-btn>
   </v-row>
@@ -58,6 +59,21 @@ export default {
         const res = await axios.get(`https://api.funplanet.tw/clientList/${this.dayjsObj.format('YYYY')}/${this.dayjsObj.format('MM')}`)
         this.sList = res.data
         this.showMonth = this.dayjsObj.format('M')
+      } catch (err) {
+        console.log('err', err)
+        this.$toast.warning('load 錯誤')
+      } finally {
+        this.isLoading = false
+      }
+    },
+    async loadPreviousMonth () {
+      try {
+        this.isLoading = true
+        const prevMonthDayjsObj = this.dayjsObj.subtract(1, 'month')
+
+        const res = await axios.get(`https://api.funplanet.tw/clientList/${prevMonthDayjsObj.format('YYYY')}/${prevMonthDayjsObj.format('MM')}`)
+        this.sList = res.data
+        this.showMonth = prevMonthDayjsObj.format('M')
       } catch (err) {
         console.log('err', err)
         this.$toast.warning('load 錯誤')
