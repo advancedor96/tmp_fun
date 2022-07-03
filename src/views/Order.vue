@@ -39,8 +39,8 @@
                 <v-sheet color="green" width="20" height="20" class="rounded-circle" style="min-width:20px;"></v-sheet>
                 <span class="ml-2">成團，尚有{{max - item.childList.length}}名額</span>
               </div>
-              <div v-if="max <= item.childList.length" class="d-flex align-center" style="min-width:20px;">
-                <v-sheet color="red" width="20" height="20" class="rounded-circle"></v-sheet>
+              <div v-if="max <= item.childList.length" class="d-flex align-center">
+                <v-sheet color="red" width="20" height="20" class="rounded-circle" style="min-width:20px;"></v-sheet>
                 <span class="ml-2">成團，額滿，可候補</span>
               </div>
             </template>
@@ -113,7 +113,12 @@
         prepend-icon="mdi-cellphone"
         :rules="[val => (val || '').length > 0 || '必填', val => val.length === 10 || '手機號碼須為10個數字']" required
       ></v-text-field>
-      <v-text-field label="備註" outlined dense v-model="note" prepend-icon="mdi-information-outline"></v-text-field>
+      <!-- 線上付款方式 -->
+      <v-radio-group v-if="type==='線上'" v-model="online_payment" label="付款方式" row  class="mt-0">
+        <v-radio label="單次匯款" value="single_pay"></v-radio>
+        <v-radio label="扣儲值" value="discount_card"></v-radio>
+      </v-radio-group>
+      <v-text-field label="備註" counter maxlength="60" outlined dense v-model="note" prepend-icon="mdi-information-outline"></v-text-field>
       <div class="d-flex justify-space-between">
         <v-btn outlined color="primary" @click="$router.go(-1)"> 上一頁 </v-btn>
         <v-btn color="primary" @click="submit"> 送出資料 </v-btn>
@@ -157,6 +162,7 @@ export default {
     child_list: [{ child_name: '', icon: 0 }],
     parent_line: '',
     phone: '',
+    online_payment: '',
     note: '',
     isLoading: true,
     icons: ['mdi-face-man', 'mdi-face-woman', 'mdi-robot', 'mdi-emoticon-devil'],
@@ -229,11 +235,16 @@ export default {
       }
       this.$refs.form.validate()
       if (!this.valid) return false
+      if (this.type === '線上' && this.online_payment === '') {
+        this.$toast.error('需選擇付款方式')
+        return
+      }
 
       const obj = {
         session_id: this.session_id,
         parent_line: this.parent_line,
         phone: this.phone,
+        online_payment: this.online_payment,
         childList: this.child_list,
         timeIdList: this.selected_time.map(e => ({ time_id: e })),
         note: this.note
