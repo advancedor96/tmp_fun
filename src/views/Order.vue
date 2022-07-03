@@ -55,14 +55,29 @@
       </v-expansion-panel>
     </v-expansion-panels>
 
+    <div class="colorInfo d-flex align-center mt-3 mb-2">
+      <v-sheet color="red" width="20" height="20" class="rounded-circle d-inline-block"></v-sheet>代表已額滿，可候補，
+      <v-sheet color="green" width="20" height="20" class="rounded-circle d-inline-block"></v-sheet>代表尚有名額，
+      <v-sheet color="orange" width="20" height="20" class="rounded-circle d-inline-block"></v-sheet>代表尚未達開場人數下限
+    </div>
     <div v-for="(e,i) in timeList" :key="'a'+i" class="d-flex align-center">
       <v-checkbox
           v-model="selected_time"
-          :label="e.datetime + ' ' + e.text"
           :value="e.time_id"
           dense
           style="height:35px;"
-      ></v-checkbox>
+      >
+        <template v-slot:label>
+          <div class="align-center d-flex">
+            <v-sheet v-if="e.childList.length< min" color="orange" width="20" height="20" class="rounded-circle d-inline-block"></v-sheet>
+            <v-sheet v-if="min<=e.childList.length && e.childList.length<max " color="green" width="20" height="20" class="rounded-circle d-inline-block"></v-sheet>
+            <v-sheet v-if="max <= e.childList.length" color="red" width="20" height="20" class="rounded-circle d-inline-block"></v-sheet>
+            <span class="ml-2">{{ e.datetime + ' ' + e.text}}</span>
+          </div>
+        </template>
+      </v-checkbox>
+      <!-- <v-sheet v-if="e.childList.length< min" color="orange" width="20" height="20" class="rounded-circle d-inline-block"></v-sheet> -->
+
     </div>
     <v-form ref="form" v-model="valid" style="max-width: 400px;">
       <div v-for="(child, idx) in child_list" :key="idx" class="d-flex mt-2">
