@@ -13,7 +13,6 @@
     <v-expansion-panels>
       <v-expansion-panel class="elevation-0">
         <v-expansion-panel-header>
-
           <div class="d-flex text-h4 justify-space-between">即時名單
             <span><v-chip color="blue" class="mr-2" outlined>錄取</v-chip><v-chip color="gray" text-color="grey" outlined>候補</v-chip></span>
           </div>
@@ -33,14 +32,14 @@
           >
             <template v-slot:[`item.situation`]="{ item }">
               <div v-if="item.childList.length< min" class="d-flex align-center">
-                <v-sheet color="orange" width="20" height="20" class="rounded-circle"></v-sheet>
+                <v-sheet color="orange" width="20" height="20" class="rounded-circle" style="min-width:20px;"></v-sheet>
                 <span class="ml-2">尚未成團，差{{min - item.childList.length}}人</span>
               </div>
               <div v-if="min<=item.childList.length && item.childList.length<max " class="d-flex align-center">
-                <v-sheet color="green" width="20" height="20" class="rounded-circle"></v-sheet>
+                <v-sheet color="green" width="20" height="20" class="rounded-circle" style="min-width:20px;"></v-sheet>
                 <span class="ml-2">成團，尚有{{max - item.childList.length}}名額</span>
               </div>
-              <div v-if="max <= item.childList.length" class="d-flex align-center">
+              <div v-if="max <= item.childList.length" class="d-flex align-center" style="min-width:20px;">
                 <v-sheet color="red" width="20" height="20" class="rounded-circle"></v-sheet>
                 <span class="ml-2">成團，額滿，可候補</span>
               </div>
@@ -56,9 +55,9 @@
     </v-expansion-panels>
 
     <div class="colorInfo d-flex align-center mt-3 mb-2">
-      <v-sheet color="red" width="20" height="20" class="rounded-circle d-inline-block"></v-sheet>代表已額滿，可候補，
-      <v-sheet color="green" width="20" height="20" class="rounded-circle d-inline-block"></v-sheet>代表尚有名額，
-      <v-sheet color="orange" width="20" height="20" class="rounded-circle d-inline-block"></v-sheet>代表尚未達開場人數下限
+      <v-sheet color="red" width="20" height="20" class="rounded-circle d-inline-block mr-1"></v-sheet>代表已額滿，可候補，
+      <v-sheet color="green" width="20" height="20" class="rounded-circle d-inline-block mr-1"></v-sheet>代表尚有名額，
+      <v-sheet color="orange" width="20" height="20" class="rounded-circle d-inline-block mr-1"></v-sheet>代表尚未達開場人數下限
     </div>
     <div v-for="(e,i) in timeList" :key="'a'+i" class="d-flex align-center">
       <v-checkbox

@@ -7,13 +7,13 @@
 你報名的場次為：<span class="sessionName">{{ name }}</span>
   </div>
 
-你報名的日期有：<br />
+報名的日期有：<br />
 <ul>
   <li v-for="(e, i) in showSelectedTime" :key="i">
     {{e}}
   </li>
 </ul>
-你的聯絡電話為：
+聯絡電話為：
 <ul>
   <li v-if="phone">{{phone}}</li>
 </ul>
@@ -40,6 +40,50 @@
   按這裡回去看即時名單！
     </v-btn>
   </div>
+
+    <!-- <v-expansion-panels>
+      <v-expansion-panel class="elevation-0">
+        <v-expansion-panel-header>
+          <div class="d-flex text-h4 justify-space-between">結果名單
+            <span><v-chip color="blue" class="mr-2" outlined>錄取</v-chip><v-chip color="gray" text-color="grey" outlined>候補</v-chip></span>
+          </div>
+        </v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <v-data-table
+            :headers="[
+              { text: '時間', value: 'datetime' },
+              { text: '備註', value: 'text' },
+              { text: '報名狀況', value: 'situation' },
+              { text: '成員', value: 'member' }
+            ]"
+            :items="this.timeList.filter(time=>  this.selected_time.findIndex(e=> e === time.time_id) !== -1 )"
+            :items-per-page="-1"
+            hide-default-footer
+            disable-sort
+          >
+            <template v-slot:[`item.situation`]="{ item }">
+              <div v-if="item.childList.length< min" class="d-flex align-center">
+                <v-sheet color="orange" width="20" height="20" class="rounded-circle"></v-sheet>
+                <span class="ml-2">尚未成團，差{{min - item.childList.length}}人</span>
+              </div>
+              <div v-if="min<=item.childList.length && item.childList.length<max " class="d-flex align-center">
+                <v-sheet color="green" width="20" height="20" class="rounded-circle"></v-sheet>
+                <span class="ml-2">成團，尚有{{max - item.childList.length}}名額</span>
+              </div>
+              <div v-if="max <= item.childList.length" class="d-flex align-center">
+                <v-sheet color="red" width="20" height="20" class="rounded-circle"></v-sheet>
+                <span class="ml-2">成團，額滿，可候補</span>
+              </div>
+            </template>
+            <template v-slot:[`item.member`]="{ item }">
+              <v-chip v-for="(c, idx) in item.childList.slice(0, max)" :key="idx" color="blue" outlined class="mr-1 mb-1  ">{{c.child_name}}</v-chip>
+              <v-chip v-for="(c, idx) in item.childList.slice(max, item.childList.length)" :key="'g'+idx" color="gray" text-color="grey" outlined class="mr-1">{{c.child_name}}</v-chip>
+            </template>
+
+          </v-data-table>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+    </v-expansion-panels> -->
 </div>
 
 </v-container>
