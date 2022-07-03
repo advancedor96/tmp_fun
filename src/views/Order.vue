@@ -2,7 +2,7 @@
 <v-container>
   <OrderPage2 v-if="page===2" :child_list="child_list" :parent_line="parent_line"
     :phone="phone" :selected_time="selected_time"
-    :timeList="timeList"
+    :sessionId="this.session_id"
     @go_previous="page=1"
     @the_submit="submit"
   />
@@ -192,7 +192,7 @@ export default {
     async load () {
       this.isLoading = true
       try {
-        const res = await axios.post('https://api.funplanet.tw/getSessionDetailById', {
+        const res = await axios.post('/getSessionDetailById', {
           session_id: this.session_id
         })
         const data = res.data
@@ -242,7 +242,7 @@ export default {
 
       try {
         this.isLoading = true
-        const res = await axios.post('https://api.funplanet.tw/addOrder', obj)
+        const res = await axios.post('/addOrder', obj)
         if (res.status === 200) {
           this.$toast.success('報名成功')
           this.page = 2
