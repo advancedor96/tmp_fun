@@ -56,8 +56,8 @@ export default {
       try {
         this.isLoading = true
 
-        const res = await axios.get(`https://api.funplanet.tw/clientList/${this.dayjsObj.format('YYYY')}/${this.dayjsObj.format('MM')}`)
-        this.sList = res.data
+        const res = await axios.get(`/clientList/${this.dayjsObj.format('YYYY')}/${this.dayjsObj.format('MM')}`)
+        this.sList = res.data.filter(e => e.publish === '1')
         this.showMonth = this.dayjsObj.format('M')
       } catch (err) {
         console.log('err', err)
@@ -71,7 +71,7 @@ export default {
         this.isLoading = true
         const prevMonthDayjsObj = this.dayjsObj.subtract(1, 'month')
 
-        const res = await axios.get(`https://api.funplanet.tw/clientList/${prevMonthDayjsObj.format('YYYY')}/${prevMonthDayjsObj.format('MM')}`)
+        const res = await axios.get(`/clientList/${prevMonthDayjsObj.format('YYYY')}/${prevMonthDayjsObj.format('MM')}`)
         this.sList = res.data
         this.showMonth = prevMonthDayjsObj.format('M')
       } catch (err) {
@@ -86,7 +86,7 @@ export default {
         this.isLoading = true
         const nextMonthDayjsObj = this.dayjsObj.add(1, 'month')
 
-        const res = await axios.get(`https://api.funplanet.tw/clientList/${nextMonthDayjsObj.format('YYYY')}/${nextMonthDayjsObj.format('MM')}`)
+        const res = await axios.get(`/clientList/${nextMonthDayjsObj.format('YYYY')}/${nextMonthDayjsObj.format('MM')}`)
         this.sList = res.data
         this.showMonth = nextMonthDayjsObj.format('M')
       } catch (err) {

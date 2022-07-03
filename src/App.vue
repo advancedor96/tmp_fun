@@ -16,6 +16,7 @@
 </template>
 <script>
 
+import axios from 'axios'
 export default {
   data: () => ({
     drawer: false,
@@ -30,6 +31,8 @@ export default {
 
   },
   created () {
+    axios.defaults.baseURL = 'http://localhost:8888/' // 測試機
+    // axios.defaults.baseURL = 'https://api.funplanet.tw' // 正式環境
   }
 }
 </script>
