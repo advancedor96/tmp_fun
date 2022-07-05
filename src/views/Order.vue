@@ -55,9 +55,9 @@
     </v-expansion-panels>
 
     <div class="colorInfo d-flex align-center mt-3 mb-2">
-      <v-sheet color="red" width="20" height="20" class="rounded-circle d-inline-block mr-1" style="min-width:20px;"></v-sheet>代表已額滿，可候補，
-      <v-sheet color="green" width="20" height="20" class="rounded-circle d-inline-block mr-1" style="min-width:20px;"></v-sheet>代表尚有名額，
+      <v-sheet color="green" width="20" height="20" class="rounded-circle d-inline-block mr-1" style="min-width:20px;"></v-sheet>代表尚有名額
       <v-sheet color="orange" width="20" height="20" class="rounded-circle d-inline-block mr-1" style="min-width:20px;"></v-sheet>代表尚未達開場人數下限
+      <v-sheet color="red" width="20" height="20" class="rounded-circle d-inline-block mr-1" style="min-width:20px;"></v-sheet>代表已額滿，可候補
     </div>
     <div v-for="(e,i) in timeList" :key="'a'+i" class="d-flex align-center">
       <v-checkbox
