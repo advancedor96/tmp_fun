@@ -6,7 +6,7 @@
         <v-icon >mdi-arrow-left-bold</v-icon>
       </v-btn>
       <!-- <v-app-bar-nav-icon @click="$router.push('/OrderList')"></v-app-bar-nav-icon> -->
-      <v-toolbar-title>Fun星球報名系統</v-toolbar-title>
+      <v-toolbar-title>(小哈家)Fun星球報名系統</v-toolbar-title>
     </v-app-bar>
 
     <v-main>
@@ -32,7 +32,8 @@ export default {
   },
   created () {
     // axios.defaults.baseURL = 'http://localhost:8888/' // 測試機
-    axios.defaults.baseURL = 'https://api.funplanet.tw' // 正式環境
+    axios.defaults.baseURL = this.$apiUrl // 正式環境
+    // axios.defaults.baseURL = 'https://api.xn--mnq981l.com' // 正式環境
   }
 }
 </script>

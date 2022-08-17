@@ -7,7 +7,7 @@
     @the_submit="submit"
   />
   <div v-if="page===1">
-    <v-img :src="`https://api.funplanet.tw/upload/${image}`" max-width="940"  alt="xx" />
+    <v-img :src="`${$apiUrl}/upload/${image}`" max-width="940"  alt="xx" />
     <p class="text-body mt-4" style="white-space: pre-wrap;">{{text}} </p>
 
     <v-expansion-panels>

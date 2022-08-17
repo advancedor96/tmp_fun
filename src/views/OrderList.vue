@@ -12,7 +12,7 @@
   <v-row class="mb-15">
     <v-card elevation="2" v-for="(item, i) in sList" :key="i" class="mt-4 mx-2" width="370"
       @click="$router.push(`/list/${item.session_id}`)">
-      <v-img :src="`https://api.funplanet.tw/upload/${item.image}`" max-width="940"></v-img>
+      <v-img :src="`${$apiUrl}/upload/${item.image}`" max-width="940"></v-img>
     </v-card>
 
   </v-row>
