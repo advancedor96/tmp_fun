@@ -31,8 +31,7 @@ export default {
 
   },
   created () {
-    // axios.defaults.baseURL = 'http://localhost:8888/' // 測試機
-    axios.defaults.baseURL = this.$apiUrl // 正式環境
+    axios.defaults.baseURL = this.$apiUrl
     // axios.defaults.baseURL = 'https://api.xn--mnq981l.com' // 正式環境
   }
 }
