@@ -6,7 +6,7 @@ import router from './router'
 import VueToast from 'vue-toast-notification'
 import 'vue-toast-notification/dist/theme-sugar.css'
 
-Vue.prototype.$apiUrl = 'https://api.xn--mnq981l.com' // 之後要改成  https://api.funplanet.tw
+Vue.prototype.$apiUrl = 'https://api.funplanet.tw' // 2022/10/25搬家
 
 Vue.config.productionTip = false
 Vue.use(VueSimpleAlert)
