@@ -1,5 +1,5 @@
 <template>
-<v-container>
+<v-container class="mb-10">
   <OrderPage2 v-if="page===2" :child_list="child_list" :parent_line="parent_line"
     :phone="phone" :selected_time="selected_time"
     :sessionId="this.session_id"
