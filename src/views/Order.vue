@@ -6,7 +6,7 @@
     @go_previous="page=1"
     @the_submit="submit"
   />
-  <div v-if="page===1">
+  <div v-if="page===1 && publish===true">
     <v-img :src="`${$apiUrl}/upload/${image}`" max-width="940"  alt="xx" />
     <p class="text-body mt-4" style="white-space: pre-wrap;">{{text}} </p>
 
@@ -125,6 +125,11 @@
       </div>
     </v-form>
   </div>
+  <div v-if="page===1 && publish === false">
+    <div class="d-flex text-h4 justify-space-between">抱歉， "{{name}}" 此活動已關閉。<br>
+    按左上角的⬅ 看其他活動
+    </div>
+  </div>
 
   <v-overlay :value="isLoading">
     <v-progress-circular
@@ -156,6 +161,7 @@ export default {
     text: '',
     min: 0,
     max: 0,
+    publish: true,
     timeList: [],
 
     selected_time: [],
@@ -209,6 +215,8 @@ export default {
         this.text = data.text
         this.min = data.min
         this.max = data.max
+        this.publish = data.publish === '1'
+
         this.timeList = data.time_list.map((e, i) => {
           // const childArr = e.childList.map((child, cid) => {
           //   if (this.max <= cid) return child.child_name + '(候補)'
@@ -252,6 +260,16 @@ export default {
 
       try {
         this.isLoading = true
+
+        const checkIsPublished = await axios.post('/getSessionDetailById', {
+          session_id: this.session_id
+        })
+        if (checkIsPublished.data.publish !== '1') {
+          this.$toast.error('報名失敗。此活動已關閉。請重新連線。')
+          this.isLoading = false
+          return false
+        }
+
         const res = await axios.post('/addOrder', obj)
         if (res.status === 200) {
           this.$toast.success('報名成功')
