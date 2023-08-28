@@ -56,11 +56,11 @@
 
     <div class="colorInfo d-flex align-center mt-3 mb-2">
       <v-sheet color="green" width="20" height="20" class="rounded-circle d-inline-block mr-1" style="min-width:20px;"></v-sheet>代表尚有名額
-      <v-sheet color="orange" width="20" height="20" class="rounded-circle d-inline-block mr-1" style="min-width:20px;"></v-sheet>代表尚未達開場人數下限
-      <v-sheet color="red" width="20" height="20" class="rounded-circle d-inline-block mr-1" style="min-width:20px;"></v-sheet>代表已額滿，可候補
+      <v-sheet color="orange" width="20" height="20" class="ml-3 rounded-circle d-inline-block mr-1" style="min-width:20px;"></v-sheet>代表尚未達開場人數下限
+      <v-sheet color="red" width="20" height="20" class="ml-3 rounded-circle d-inline-block mr-1" style="min-width:20px;"></v-sheet>代表已額滿，可候補
     </div>
     <div v-for="(e,i) in timeList" :key="'a'+i" class="d-flex align-center">
-      <v-checkbox
+      <v-checkbox v-if="max_standby!==-1 && e.childList.length < max+max_standby"
           v-model="selected_time"
           :value="e.time_id"
           dense
@@ -70,10 +70,20 @@
           <div class="align-center d-flex">
             <v-sheet v-if="e.childList.length< min" color="orange" width="20" height="20" class="rounded-circle d-inline-block"></v-sheet>
             <v-sheet v-if="min<=e.childList.length && e.childList.length<max " color="green" width="20" height="20" class="rounded-circle d-inline-block"></v-sheet>
-            <v-sheet v-if="max <= e.childList.length" color="red" width="20" height="20" class="rounded-circle d-inline-block"></v-sheet>
+            <v-sheet v-if="max <= e.childList.length && e.childList.length < max+max_standby" color="red" width="20" height="20" class="rounded-circle d-inline-block"></v-sheet>
             <span class="ml-2">{{ e.datetime + ' ' + e.text}}</span>
           </div>
         </template>
+      </v-checkbox>
+      <v-checkbox v-else disabled dense style="height:35px;">
+        <template v-slot:label>
+          <div class="align-center d-flex">
+            <v-sheet v-if="max+max_standby <= e.childList.length" color="black" width="20" height="20" class="rounded-circle d-inline-block"></v-sheet>
+            <span class="ml-2" style="text-decoration: line-through;">{{ e.datetime + ' ' + e.text}} </span>
+            <span >(已後補 {{max_standby}}人，無法再報名)</span>
+          </div>
+        </template>
+
       </v-checkbox>
       <!-- <v-sheet v-if="e.childList.length< min" color="orange" width="20" height="20" class="rounded-circle d-inline-block"></v-sheet> -->
 
@@ -161,6 +171,7 @@ export default {
     text: '',
     min: 0,
     max: 0,
+    max_standby: -1,
     publish: true,
     timeList: [],
 
@@ -213,8 +224,9 @@ export default {
         this.year_month = data.year_month
         this.image = data.image
         this.text = data.text
-        this.min = data.min
-        this.max = data.max
+        this.min = parseInt(data.min)
+        this.max = parseInt(data.max)
+        this.max_standby = parseInt(data.max_standby)
         this.publish = data.publish === '1'
 
         this.timeList = data.time_list.map((e, i) => {
