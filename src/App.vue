@@ -6,7 +6,9 @@
       </v-btn>
       <v-toolbar-title>Fun星球報名系統</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn icon @click="toggleDarkMode"><v-icon>mdi-weather-night</v-icon></v-btn>
+      <v-btn icon @click="toggleDarkMode"><v-icon
+        :class="$vuetify.theme.dark ? 'primary--text' : 'white--text'"
+        >mdi-weather-night</v-icon></v-btn>
     </v-app-bar>
 
     <v-main>
@@ -44,7 +46,7 @@ export default {
       if (darkMode === 'true') this.$vuetify.theme.dark = true
       else this.$vuetify.theme.dark = false
     } else {
-      this.$vuetify.theme.dark = false
+      this.$vuetify.theme.dark = true
     }
   },
   methods: {
