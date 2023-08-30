@@ -4,7 +4,7 @@
  <br />
 <div class="text-body" style="max-width: 330px;" >
   <div>
-你報名的場次為：<span class="sessionName">{{ name }}</span>
+你報名的場次為：<span class="sessionName primary--text">{{ name }}</span>
   </div>
 
 報名的日期有：<br />
@@ -117,7 +117,6 @@ export default {
 
 <style>
 .sessionName{
-  color: #673ab7;
   font-weight: 800;
   font-size: 18px;
 }

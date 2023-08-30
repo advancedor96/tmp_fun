@@ -4,12 +4,12 @@
       <div class="text-h3 mt-3">{{showMonth}}月場次列表</div>
   </v-row>
   <v-row class="mt-5 justify-space-between pr-2">
-        <v-btn outlined color="deep-purple" class="ml-2" @click="loadPreviousMonth">上個月</v-btn>
-        <v-btn outlined color="deep-purple" class="ml-2" @click="load">當月</v-btn>
-        <v-btn outlined color="deep-purple" class="ml-2" @click="loadNextMonth">下個月</v-btn>
+        <v-btn outlined color="primary" class="ml-2" @click="loadPreviousMonth">上個月</v-btn>
+        <v-btn outlined color="primary" class="ml-2" @click="load">當月</v-btn>
+        <v-btn outlined color="primary" class="ml-2" @click="loadNextMonth">下個月</v-btn>
   </v-row>
 
-  <v-row class="mb-15">
+  <v-row class="mb-15 justify-center">
     <v-card elevation="2" v-for="(item, i) in sList" :key="i" class="mt-4 mx-2" width="370"
       @click="$router.push(`/list/${item.session_id}`)">
       <v-img :src="`${$apiUrl}/upload/${item.image}`" max-width="940"></v-img>

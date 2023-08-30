@@ -5,6 +5,8 @@
         <v-icon >mdi-arrow-left-bold</v-icon>
       </v-btn>
       <v-toolbar-title>Fun星球報名系統</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-btn icon @click="toggleDarkMode"><v-icon>mdi-weather-night</v-icon></v-btn>
     </v-app-bar>
 
     <v-main>
@@ -36,6 +38,20 @@ export default {
   created () {
     axios.defaults.baseURL = this.$apiUrl
     // axios.defaults.baseURL = 'https://api.xn--mnq981l.com' // 正式環境
+
+    const darkMode = localStorage.getItem('darkmode')
+    if (darkMode) {
+      if (darkMode === 'true') this.$vuetify.theme.dark = true
+      else this.$vuetify.theme.dark = false
+    } else {
+      this.$vuetify.theme.dark = false
+    }
+  },
+  methods: {
+    toggleDarkMode () {
+      this.$vuetify.theme.dark = !this.$vuetify.theme.dark
+      localStorage.setItem('darkmode', this.$vuetify.theme.dark)
+    }
   }
 }
 </script>
