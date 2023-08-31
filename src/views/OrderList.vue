@@ -9,7 +9,7 @@
         <v-btn outlined color="primary" class="ml-2" @click="loadNextMonth">下個月</v-btn>
   </v-row>
 
-  <v-row class="mb-15 justify-center">
+  <v-row class="mb-15 justify-center justify-md-space-between justify-sm-center">
     <v-card elevation="2" v-for="(item, i) in sList" :key="i" class="mt-4 mx-2" width="370"
       @click="$router.push(`/list/${item.session_id}`)">
       <v-img :src="`${$apiUrl}/upload/${item.image}`" max-width="940"></v-img>
