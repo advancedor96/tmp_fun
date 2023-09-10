@@ -15,7 +15,7 @@
       <router-view/>
       <v-footer padless absolute height="20" class="mt-9" style="bottom: 0; width: 100%;">
         <div class="text-center" style="width: 100%; color: #858585;font-size:12px;">
-          Actived in 2022/04, made by ding.
+          Actived in 2022/03, made by ding.
         </div>
       </v-footer>
     </v-main>
