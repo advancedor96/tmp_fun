@@ -1,21 +1,64 @@
-import Vue from 'vue'
+
+import { createApp } from 'vue'
+import { createPinia } from 'pinia'
+
+// Vuetify
+import 'vuetify/styles'
+import { createVuetify } from 'vuetify'
+import { aliases, mdi } from 'vuetify/iconsets/mdi'
+import * as components from 'vuetify/components'
+import * as directives from 'vuetify/directives'
+import { VTimePicker } from 'vuetify/labs/VTimePicker'
+
 import App from './App.vue'
-import vuetify from './plugins/vuetify'
-import VueSimpleAlert from 'vue-simple-alert'
 import router from './router'
-import VueToast from 'vue-toast-notification'
-import 'vue-toast-notification/dist/theme-sugar.css'
 
-Vue.prototype.$apiUrl = 'https://api.funplanet.tw' // 2022/10/25搬家
+import VueSweetalert2 from 'vue-sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
+import Vue3Toastify from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
 
-Vue.config.productionTip = false
-Vue.use(VueSimpleAlert)
-Vue.use(VueToast, {
-  duration: 2000, position: 'top-right'
+const customLightTheme = {
+  dark: false,
+  colors: {
+    primary: '#6200ea',
+  },
+}
+const customDarkTheme =  {
+  dark: true,
+  colors: {
+    primary: '#ff9800',
+  },
+}
+
+const vuetify = createVuetify({
+  theme: {
+    defaultTheme: 'customLightTheme',
+    themes: { customLightTheme, customDarkTheme }
+  },
+  directives,
+
+  icons: {
+    defaultSet: 'mdi',
+    aliases,
+    sets: {
+      mdi,
+    },
+  },
+  components: {
+    ...components,
+    VTimePicker,
+  }
 })
 
-new Vue({
-  vuetify,
-  router,
-  render: h => h(App)
-}).$mount('#app')
+const app = createApp(App)
+app.use(VueSweetalert2);
+app.config.globalProperties.$apiUrl = 'https://api.funplanet.tw'
+// app.config.globalProperties.$apiUrl = 'http://localhost'
+
+app.use(createPinia())
+app.use(router)
+app.use(vuetify)
+app.use(Vue3Toastify, {autoClose:3000})
+
+app.mount('#app')

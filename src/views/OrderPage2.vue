@@ -49,6 +49,7 @@
 <script>
 import axios from 'axios'
 import dayjs from 'dayjs'
+import { toast } from 'vue3-toastify';
 const mapWeek = ['日', '一', '二', '三', '四', '五', '六']
 export default {
   props: {
@@ -107,8 +108,7 @@ export default {
     },
     check () {
       location.reload()
-      // this.$fire({ title: '報名成功', type: 'success' }).then(r => {
-      // })
+
     }
   }
 

@@ -1,63 +1,56 @@
-<template>
-  <v-app>
-    <v-app-bar app color="deep-purple accent-4" dark>
-      <v-btn icon v-if="$route.name !== 'OrderList'"  @click="$router.push('/OrderList')">
-        <v-icon >mdi-arrow-left-bold</v-icon>
-      </v-btn>
-      <v-toolbar-title>Fun星球報名系統</v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-btn icon @click="toggleDarkMode"><v-icon
-        :class="$vuetify.theme.dark ? 'primary--text' : 'white--text'"
-        >mdi-weather-night</v-icon></v-btn>
-    </v-app-bar>
 
-    <v-main>
-      <router-view/>
-      <v-footer padless absolute height="20" class="mt-9" style="bottom: 0; width: 100%;">
-        <div class="text-center" style="width: 100%; color: #858585;font-size:12px;">
-          Actived in 2022/03, made by ding.
-        </div>
-      </v-footer>
-    </v-main>
-  </v-app>
+<template>
+<v-layout class="rounded rounded-md">
+  <v-app-bar app density="compact" color="deep-purple accent-4" dark >
+    <v-btn variant="text" v-if="$route.name !== 'OrderList'"  @click="$router.push('/OrderList')">
+      <v-icon >mdi-arrow-left-bold</v-icon>
+    </v-btn>
+    <v-toolbar-title>Fun星球報名系統</v-toolbar-title>
+    <v-spacer></v-spacer>
+    <v-btn variant="text" @click="toggleDarkMode"><v-icon>mdi-weather-night</v-icon></v-btn>
+  </v-app-bar>
+  <v-main>
+    <RouterView />
+    <v-footer padless absolute height="20" class="mt-9" style="bottom: 0; width: 100%;">
+      <div class="text-center" style="width: 100%; color: #858585;font-size:12px;">
+        Actived in 2022/03, made by ding. Vue3
+      </div>
+    </v-footer>
+  </v-main>
+
+</v-layout>
 </template>
 <script>
-
+import { useTheme } from 'vuetify'
 import axios from 'axios'
 export default {
   data: () => ({
-    drawer: false,
     group: null,
-    iconName: ''
+    iconName: '',
+    theme: useTheme()
   }),
 
-  watch: {
-    group () {
-      this.drawer = false
-    }
-
-  },
   created () {
     axios.defaults.baseURL = this.$apiUrl
-    // axios.defaults.baseURL = 'https://api.xn--mnq981l.com' // 正式環境
-
-    const darkMode = localStorage.getItem('darkmode')
-    if (darkMode) {
-      if (darkMode === 'true') this.$vuetify.theme.dark = true
-      else this.$vuetify.theme.dark = false
-    } else {
-      this.$vuetify.theme.dark = true
-    }
+  },
+  mounted(){
+    const themeName = localStorage.getItem('themeName')
+      if (themeName) {
+        this.theme.global.name = themeName
+      }
   },
   methods: {
     toggleDarkMode () {
-      this.$vuetify.theme.dark = !this.$vuetify.theme.dark
-      localStorage.setItem('darkmode', this.$vuetify.theme.dark)
+      this.theme.global.name = this.theme.global.current.dark ? 'customLightTheme' : 'customDarkTheme'
+      localStorage.setItem('themeName', this.theme.global.name)
     }
   }
 }
 </script>
 
-<style>
 
+<style>
+.v-label {
+  --v-medium-emphasis-opacity: 1 ;
+}
 </style>

@@ -4,9 +4,9 @@
       <div class="text-h3 mt-3">{{showMonth}}月場次列表</div>
   </v-row>
   <v-row class="mt-5 justify-space-between pr-2">
-        <v-btn outlined color="primary" class="ml-2" @click="loadPreviousMonth">上個月</v-btn>
-        <v-btn outlined color="primary" class="ml-2" @click="load">當月</v-btn>
-        <v-btn outlined color="primary" class="ml-2" @click="loadNextMonth">下個月</v-btn>
+    <v-btn variant="outlined" color="primary" class="ml-2" @click="loadPreviousMonth">上個月</v-btn>
+    <v-btn variant="outlined" color="primary" class="ml-2" @click="load">當月</v-btn>
+    <v-btn variant="outlined" color="primary" class="ml-2" @click="loadNextMonth">下個月</v-btn>
   </v-row>
 
   <v-row class="mb-15 justify-center justify-md-space-between justify-sm-center">
@@ -17,11 +17,8 @@
 
   </v-row>
 
-  <v-overlay :value="isLoading">
-    <v-progress-circular
-      indeterminate
-      size="64"
-    ></v-progress-circular>
+  <v-overlay v-model="isLoading" class="align-center justify-center">
+    <v-progress-circular indeterminate color="primary" size="64"></v-progress-circular>
   </v-overlay>
 </v-container>
 </template>
@@ -29,19 +26,13 @@
 <script>
 import axios from 'axios'
 import dayjs from 'dayjs'
+import { toast } from 'vue3-toastify';
 export default {
   data: () => ({
     sList: [],
-    headers: [
-      { text: '名稱', value: 'name' },
-      { text: '類型', value: 'type' },
-      { text: '月份', value: 'year_month' },
-      { text: '縮圖', value: 'image' }
-    ],
     isLoading: false,
     dayjsObj: null,
     showMonth: ''
-
   }),
   created () {
     this.dayjsObj = dayjs()
@@ -61,7 +52,7 @@ export default {
         this.showMonth = this.dayjsObj.format('M')
       } catch (err) {
         console.log('err', err)
-        this.$toast.warning('load 錯誤')
+        toast.warning('load 錯誤')
       } finally {
         this.isLoading = false
       }
@@ -76,7 +67,7 @@ export default {
         this.showMonth = prevMonthDayjsObj.format('M')
       } catch (err) {
         console.log('err', err)
-        this.$toast.warning('load 錯誤')
+        toast.warning('load 錯誤')
       } finally {
         this.isLoading = false
       }
@@ -91,7 +82,7 @@ export default {
         this.showMonth = nextMonthDayjsObj.format('M')
       } catch (err) {
         console.log('err', err)
-        this.$toast.warning('load 錯誤')
+        toast.warning('load 錯誤')
       } finally {
         this.isLoading = false
       }

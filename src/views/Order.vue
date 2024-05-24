@@ -12,18 +12,18 @@
 
     <v-expansion-panels>
       <v-expansion-panel class="elevation-0">
-        <v-expansion-panel-header>
-          <div class="d-flex text-h4 justify-space-between">即時名單
-            <span><v-chip color="blue" class="mr-2" outlined>錄取</v-chip><v-chip color="gray" text-color="grey" outlined>候補</v-chip></span>
-          </div>
-        </v-expansion-panel-header>
-        <v-expansion-panel-content>
+        <v-expansion-panel-title expand-icon="mdi-menu-down">
+          即時名單
+          <v-chip color="blue" class="mr-2" variant="outlined">錄取</v-chip>
+          <v-chip color="gray" text-color="grey" variant="outlined">候補</v-chip>
+        </v-expansion-panel-title>
+        <v-expansion-panel-text>
           <v-data-table
             :headers="[
-              { text: '時間', value: 'datetime' },
-              { text: '備註', value: 'text' },
-              { text: '報名狀況', value: 'situation' },
-              { text: '成員', value: 'member' }
+              { title: '時間', key: 'datetime' },
+              { title: '備註', key: 'text' },
+              { title: '報名狀況', key: 'situation' },
+              { title: '成員', key: 'member' }
             ]"
             :items="timeList"
             :items-per-page="-1"
@@ -45,12 +45,12 @@
               </div>
             </template>
             <template v-slot:[`item.member`]="{ item }">
-              <v-chip v-for="(c, idx) in item.childList.slice(0, max)" :key="idx" color="blue" outlined class="mr-1 mb-1  ">{{c.child_name}}</v-chip>
-              <v-chip v-for="(c, idx) in item.childList.slice(max, item.childList.length)" :key="'g'+idx" color="gray" text-color="grey" outlined class="mr-1">{{c.child_name}}</v-chip>
+              <v-chip v-for="(c, idx) in item.childList.slice(0, max)" :key="idx" color="blue" variant="outlined" class="mr-1 mb-1  ">{{c.child_name}}</v-chip>
+              <v-chip v-for="(c, idx) in item.childList.slice(max, item.childList.length)" :key="'g'+idx" color="gray" text-color="grey" variant="outlined" class="mr-1">{{c.child_name}}</v-chip>
             </template>
 
           </v-data-table>
-        </v-expansion-panel-content>
+        </v-expansion-panel-text>
       </v-expansion-panel>
     </v-expansion-panels>
 
@@ -63,25 +63,25 @@
       <v-checkbox
           v-model="selected_time"
           :value="e.time_id"
-          dense
-          style="height:35px;"
+          density="compact"
+          style="height:40px;"
           :disabled="e.childList.length >= max+max_standby"
       >
         <template v-slot:label>
           <div class="align-center d-flex">
-            <div v-if="e.childList.length< min" class="d-flex">
+            <div v-if="e.childList.length< min" class="d-flex align-center">
               <v-sheet color="orange" width="20" height="20" class="rounded-circle d-inline-block"></v-sheet>
               <span class="ml-2">{{ e.datetime + ' ' + e.text}}</span>
             </div>
-            <div v-if="min<=e.childList.length && e.childList.length<max" class="d-flex">
+            <div v-if="min<=e.childList.length && e.childList.length<max" class="d-flex align-center">
               <v-sheet color="green" width="20" height="20" class="rounded-circle d-inline-block"></v-sheet>
               <span class="ml-2">{{ e.datetime + ' ' + e.text}}</span>
             </div>
-            <div v-if="max <= e.childList.length && e.childList.length < max+max_standby" class="d-flex">
+            <div v-if="max <= e.childList.length && e.childList.length < max+max_standby" class="d-flex align-center">
               <v-sheet color="red" width="20" height="20" class="rounded-circle d-inline-block"></v-sheet>
               <span class="ml-2">{{ e.datetime + ' ' + e.text}}</span>
             </div>
-            <div v-if="e.childList.length >= max+max_standby" class="d-flex">
+            <div v-if="e.childList.length >= max+max_standby" class="d-flex align-center">
               <v-sheet color="black" width="20" height="20" class="rounded-circle d-inline-block"></v-sheet>
               <span class="ml-2" style="text-decoration: line-through;">{{ e.datetime + ' ' + e.text}} </span>
               <span >(已後補 {{e.childList.length - max}}人，無法再報名)</span>
@@ -92,24 +92,23 @@
 
     </div>
     <v-form ref="form" v-model="valid" style="max-width: 400px;">
-      <div v-for="(child, idx) in child_list" :key="idx" class="d-flex mt-2">
+      <div v-for="(child, idx) in child_list" :key="idx" class="d-flex mt-2 align-center">
         <v-text-field
           label="小朋友稱呼"
           v-model="child_list[idx].child_name"
           :rules="[val => (val || '').length > 0 || '必填']"
-          outlined
-          dense
+          variant="outlined"
+          density="compact"
           required
-          :prepend-icon="icons[child_list[idx].icon]"
-          @click:prepend="changeIcon(idx)"
+          prepend-icon="mdi-pac-man"
           style="height: 51px;"
         ></v-text-field>
-        <v-btn icon color="primary" @click="deleteItem(idx)">
+        <v-btn variant="text" color="primary" @click="deleteItem(idx)">
           <v-icon>mdi-delete</v-icon>
         </v-btn>
       </div>
       <div class="mt-2"   style="margin-left: 33px; margin-bottom: 20px;">
-        <v-btn outlined color="primary" @click="child_list.push({ child_name: '', icon: 0 })">
+        <v-btn variant="outlined" color="primary" @click="child_list.push({ child_name: '', icon: 0 })">
           <v-icon dark left  >
             mdi-plus
           </v-icon>
@@ -117,12 +116,12 @@
         </v-btn>
       </div>
 
-      <v-text-field label="家長LINE稱呼" outlined dense v-model="parent_line"
+      <v-text-field label="家長LINE稱呼" variant="outlined" density="compact" v-model="parent_line"
           :rules="[val => (val || '').length > 0 || '必填']" required
           :prepend-icon="parent_icons[parent_idx]"
           @click:prepend="changeParentIcon(idx)"
       ></v-text-field>
-      <v-text-field label="電話" outlined dense v-model="phone"
+      <v-text-field label="電話" variant="outlined" density="compact" v-model="phone"
         prepend-icon="mdi-cellphone"
         :rules="[val => (val || '').length > 0 || '必填', val => val.length === 10 || '手機號碼須為10個數字']" required
       ></v-text-field>
@@ -131,9 +130,9 @@
         <v-radio label="單次匯款" value="single_pay"></v-radio>
         <v-radio label="扣儲值" value="discount_card"></v-radio>
       </v-radio-group>
-      <v-text-field label="備註" counter maxlength="60" outlined dense v-model="note" prepend-icon="mdi-information-outline"></v-text-field>
+      <v-text-field label="備註" counter maxlength="60" variant="outlined" dense v-model="note" prepend-icon="mdi-information-outline"></v-text-field>
       <div class="d-flex justify-space-between">
-        <v-btn outlined color="primary" @click="$router.go(-1)"> 上一頁 </v-btn>
+        <v-btn variant="outlined" color="primary" @click="$router.go(-1)"> 上一頁 </v-btn>
         <v-btn color="primary" @click="submit"> 送出資料 </v-btn>
       </div>
     </v-form>
@@ -144,11 +143,8 @@
     </div>
   </div>
 
-  <v-overlay :value="isLoading">
-    <v-progress-circular
-      indeterminate
-      size="64"
-    ></v-progress-circular>
+  <v-overlay v-model="isLoading" class="align-center justify-center">
+    <v-progress-circular indeterminate color="primary" size="64"></v-progress-circular>
   </v-overlay>
 </v-container>
 </template>
@@ -157,6 +153,7 @@
 import axios from 'axios'
 import dayjs from 'dayjs'
 import OrderPage2 from './OrderPage2.vue'
+import { toast } from 'vue3-toastify';
 const mapWeek = ['日', '一', '二', '三', '四', '五', '六']
 
 export default {
@@ -195,7 +192,6 @@ export default {
   },
 
   created () {
-    window.d = dayjs
     this.session_id = this.$route.params.s_id
     this.load()
   },
@@ -245,7 +241,7 @@ export default {
         })
       } catch (err) {
         console.log('err', err)
-        this.$toast.warning('load 錯誤')
+        toast.warning('load 錯誤')
       } finally {
         this.isLoading = false
       }
@@ -253,13 +249,13 @@ export default {
 
     async submit () {
       if (this.selected_time.length === 0) {
-        this.$toast.error('未選擇時段')
+        toast.error('未選擇時段')
         return
       }
       this.$refs.form.validate()
       if (!this.valid) return false
       if (this.type === '線上' && this.online_payment === '') {
-        this.$toast.error('需選擇付款方式')
+        toast.error('需選擇付款方式')
         return
       }
 
@@ -280,18 +276,19 @@ export default {
           session_id: this.session_id
         })
         if (checkIsPublished.data.publish !== '1') {
-          this.$toast.error('報名失敗。此活動已關閉。請重新連線。')
+          toast.error('報名失敗。此活動已關閉。請重新連線。')
           this.isLoading = false
           return false
         }
 
         const res = await axios.post('/addOrder', obj)
         if (res.status === 200) {
-          this.$toast.success('報名成功')
-          this.page = 2
+          this.$swal('報名成功').then(()=>{
+            this.page = 2
+          })
         }
       } catch (err) {
-        this.$alert('', '失敗', 'error')
+        this.$swal('失敗', "", "error")
         console.log('err', err)
       } finally {
         this.isLoading = false
@@ -301,10 +298,10 @@ export default {
 }
 </script>
 <style scoped>
-.v-data-table ::v-deep .v-data-table__wrapper .v-data-table__mobile-row{
+.v-data-table :deep(.v-data-table__wrapper .v-data-table__mobile-row){
   min-height: 24px;
 }
-::v-deep tr.v-data-table__mobile-table-row{
+:deep(tr.v-data-table__mobile-table-row){
   margin-top: 18px;
 }
 
