@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import OrderList from '../views/OrderList.vue'
 import Order from '../views/Order.vue'
+import TheaterOrder from '../views/TheaterOrder.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -15,6 +16,11 @@ const router = createRouter({
       path: '/list/:s_id',
       name: 'Order',
       component: Order
+    },
+    {
+      path: '/listTheater/:t_id',
+      name: 'TheaterOrder',
+      component: TheaterOrder
     }
   ]
 })

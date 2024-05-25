@@ -9,6 +9,7 @@ import { aliases, mdi } from 'vuetify/iconsets/mdi'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import { VTimePicker } from 'vuetify/labs/VTimePicker'
+import { VNumberInput } from 'vuetify/labs/VNumberInput'
 
 import App from './App.vue'
 import router from './router'
@@ -48,13 +49,14 @@ const vuetify = createVuetify({
   components: {
     ...components,
     VTimePicker,
+    VNumberInput
   }
 })
 
 const app = createApp(App)
 app.use(VueSweetalert2);
-app.config.globalProperties.$apiUrl = 'https://api.funplanet.tw'
-// app.config.globalProperties.$apiUrl = 'http://localhost'
+// app.config.globalProperties.$apiUrl = 'https://api.funplanet.tw'
+app.config.globalProperties.$apiUrl = 'http://localhost'
 
 app.use(createPinia())
 app.use(router)

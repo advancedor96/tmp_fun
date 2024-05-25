@@ -11,8 +11,13 @@
 
   <v-row class="mb-15 justify-center justify-md-space-between justify-sm-center">
     <v-card elevation="2" v-for="(item, i) in sList" :key="i" class="mt-4 mx-2" width="370"
-      @click="$router.push(`/list/${item.session_id}`)">
-      <v-img :src="`${$apiUrl}/upload/${item.image}`" max-width="940"></v-img>
+    @click="showItem(item)">
+      <v-img cover :src="`${$apiUrl}/upload/${item.image}`" max-width="940" min-height="370">
+        <template v-slot:error>
+          <v-img class="mx-auto" height="300" max-width="500" src="https://upload.wikimedia.org/wikipedia/commons/6/65/No-Image-Placeholder.svg"
+          ></v-img>
+        </template>
+      </v-img>
     </v-card>
 
   </v-row>
@@ -43,12 +48,24 @@ export default {
     handleClick (item) {
       this.$router.push(`/list/${item.session_id}`)
     },
+    showItem(item){
+      if (item.event_type === 'session') {
+        this.$router.push(`/list/${item.s_or_t_id}`)
+      } else if(item.event_type === 'theater') {
+        this.$router.push(`/listTheater/${item.s_or_t_id}`)
+      } else{
+        toast.warning('無此項目')
+      }
+
+    },
     async load () {
       try {
         this.isLoading = true
 
         const res = await axios.get(`/clientList/${this.dayjsObj.format('YYYY')}/${this.dayjsObj.format('MM')}`)
-        this.sList = res.data.filter(e => e.publish === '1') //列表裡就算已經發佈的，透過前端隱藏。
+        console.log('來了：',res.data);
+        this.sList = res.data
+        
         this.showMonth = this.dayjsObj.format('M')
       } catch (err) {
         console.log('err', err)
