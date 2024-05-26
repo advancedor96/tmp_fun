@@ -237,8 +237,25 @@ export default {
           })
         }
       } catch (err) {
-        this.$swal('失敗', "", "error")
-        console.log('err', err)
+        if (err.response) {
+          // 服务器响应了请求，但状态码超出了2xx范围
+          if (err.response.status === 400 && err.response.data.success === 0) {
+              const theAreaName = err.response.data.area_name || 'Unknown area';
+              this.$swal('失敗', `${theAreaName}剩餘座位不夠，請刷新頁面`, "error");
+          } else {
+              console.log('err', err.response.data);
+              this.$swal('失敗', '發生了未知錯誤', "error");
+          }
+        } else if (err.request) {
+            // 请求已发送但没有收到响应
+            console.log('Request error', err.request);
+            this.$swal('失敗', '無法連接到伺服器，請檢查您的網絡', "error");
+        } else {
+            // 处理请求时发生错误
+            console.log('Error', err.message);
+            this.$swal('失敗', '發生了未知錯誤', "error");
+        }
+
       } finally {
         this.isLoading = false
       }

@@ -63,8 +63,8 @@ export default {
         this.isLoading = true
 
         const res = await axios.get(`/clientList/${this.dayjsObj.format('YYYY')}/${this.dayjsObj.format('MM')}`)
-        console.log('來了：',res.data);
-        this.sList = res.data
+        this.sList = res.data.filter(e => e.event_type === 'session')
+        console.log('來了：',this.sList);
         
         this.showMonth = this.dayjsObj.format('M')
       } catch (err) {
@@ -80,7 +80,7 @@ export default {
         const prevMonthDayjsObj = this.dayjsObj.subtract(1, 'month')
 
         const res = await axios.get(`/clientList/${prevMonthDayjsObj.format('YYYY')}/${prevMonthDayjsObj.format('MM')}`)
-        this.sList = res.data.filter(e => e.publish === '1') //列表裡就算已經發佈的，透過前端隱藏。
+        this.sList = res.data.filter(e => e.event_type === 'session')
         this.showMonth = prevMonthDayjsObj.format('M')
       } catch (err) {
         console.log('err', err)
@@ -95,7 +95,7 @@ export default {
         const nextMonthDayjsObj = this.dayjsObj.add(1, 'month')
 
         const res = await axios.get(`/clientList/${nextMonthDayjsObj.format('YYYY')}/${nextMonthDayjsObj.format('MM')}`)
-        this.sList = res.data.filter(e => e.publish === '1') //列表裡就算已經發佈的，透過前端隱藏。
+        this.sList = res.data.filter(e => e.event_type === 'session')
         this.showMonth = nextMonthDayjsObj.format('M')
       } catch (err) {
         console.log('err', err)
