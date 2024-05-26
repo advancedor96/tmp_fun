@@ -55,8 +55,8 @@ const vuetify = createVuetify({
 
 const app = createApp(App)
 app.use(VueSweetalert2);
-// app.config.globalProperties.$apiUrl = 'https://api.funplanet.tw'
-app.config.globalProperties.$apiUrl = 'http://localhost'
+app.config.globalProperties.$apiUrl = 'https://api.funplanet.tw'
+// app.config.globalProperties.$apiUrl = 'http://localhost'
 
 app.use(createPinia())
 app.use(router)
