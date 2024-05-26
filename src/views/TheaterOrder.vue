@@ -1,17 +1,26 @@
 <template>
 <v-container class="mb-10">
+  <TheaterOrderPage2 v-if="page===2" 
+    :selected_area="selected_area"  
+    :areaList="areaList"
+    :buyer_name="buyer_name"
+    :phone="phone"
+
+    @go_previous="page=1"
+    @the_submit="submit"
+  />
   <div v-if="page===1">
     <v-img :src="`${$apiUrl}/upload/${image}`" max-width="940"  alt="xx" />
-    <h1>劇場名稱</h1>
-    <div>{{ name }}</div>
-    <h1>說明</h1>
+    <div class="text-h4 mt-3">劇場名稱</div>
+    <div class="text-body-1">{{ name }}</div>
+    <div class="text-h4 mt-3">說明</div>
     <p class="text-body mt-4" style="white-space: pre-wrap;">{{text}} </p>
 
     <v-data-table
       :headers="[
         { title: '區域', key: 'name', width: 200 },
-        { title: '座位數', key: 'max_seats', width: 200 },
-        { title: '票價', key: 'price', width: 200 },
+        { title: '座位數', key: 'max_seats', width: 100 },
+        { title: '票價', key: 'price', width: 100 },
         { title: '說明', key: 'text' },
       ]"
       :items="areaList"
@@ -23,13 +32,13 @@
     <v-expansion-panels>
       <v-expansion-panel class="elevation-0">
         <v-expansion-panel-title expand-icon="mdi-menu-down">
-          即時名單
+          <div class="text-h5">即時名單</div> 
         </v-expansion-panel-title>
         <v-expansion-panel-text>
           <v-data-table
             :headers="[
               { title: '區域', key: 'name', width: 200 },
-              { title: '剩餘數量', key: 'remainingSeats', width: 200 },
+              { title: '剩餘座位', key: 'remainingSeats', width: 200 },
               { title: '實際人', key: 'hiddenPeople', width: 200 },
             ]"
             :items="areaList"
@@ -39,9 +48,9 @@
           >
             <template v-slot:[`item.hiddenPeople`]="{ item }">
               <div>
-                <div v-for="person in item.personList" :key="person">
-                {{ person.buyer_name }} * {{ person.num_seats }}張
-                </div>
+                <v-chip v-for="person in item.personList" :key="person" variant="outlined" class="mr-2 mb-1">
+                    {{ person.buyer_name }} * {{ person.num_seats }}位
+                </v-chip>
               </div>
             </template>
           </v-data-table>          
@@ -49,14 +58,31 @@
       </v-expansion-panel>
     </v-expansion-panels>
 
-    <h2>買票</h2>
-    <div v-for="(e,i) in areaList" :key="'a'+i" class="d-flex align-center">
-      <div>{{  e.name }}</div>
-      <v-number-input v-model="selected_area[i]" :min="0" control-variant="split" variant="outlined" density="compact" label="數量" :rules="[val => !!val && val >= 0 || '數字必須大於等於 0']" style="max-width: 150px;"></v-number-input>
+    <div class="text-h4 mt-3">選擇票種</div>
+    <v-table>
+      <thead>
+        <tr><th class="text-left">區域</th><th class="text-left">票價</th><th class="text-left">數量</th></tr>
+      </thead>
+      <tbody>
+        <tr v-for="(e,i) in areaList" :key="'a'+i">
+          <td class="text-left">{{  e.name }}  <br /> <div class="text-subtitle-1">{{ e.text }}</div>  </td>
+          <td class="text-left">$ {{  e.price }}
+            <div v-if="e.remainingSeats>0 && e.remainingSeats <=5">剩 {{ e.remainingSeats }}張</div>
+            <div v-else-if="e.remainingSeats===0">已售完</div>
+          </td>
+          <td class="text-right">
+            <v-number-input v-model="selected_area[i].num_seats" :min="0" :max="e.remainingSeats" control-variant="split" variant="outlined" density="compact"  label="" :rules="[val => !!val && val >= 0]" style="max-width: 150px;"></v-number-input>
+          </td>
+        </tr>
+        <tr>
+          <td>總金額</td>
+          <td></td>
+          <td class="text-left">NT$ <span class="bigger">{{totalPrice}}</span></td>
+        </tr>
+      </tbody>
+    </v-table>
 
-    </div>
-    <div>金額試算: NT${{totalPrice}} </div>
-
+    <div class="text-h4 mt-3">個人資訊</div>
     <v-form ref="form" v-model="valid" style="max-width: 400px;">
       <v-text-field
         label="姓名"
@@ -65,7 +91,7 @@
         variant="outlined"
         density="compact"
         required
-        prepend-icon="mdi-pac-man"
+        class="mt-3"
         style="height: 51px;"
       ></v-text-field>
 
@@ -92,11 +118,11 @@
 <script>
 import axios from 'axios'
 import dayjs from 'dayjs'
-import OrderPage2 from './OrderPage2.vue'
+import TheaterOrderPage2 from './TheaterOrderPage2.vue'
 import { toast } from 'vue3-toastify';
 
 export default {
-  components: { OrderPage2 },
+  components: { TheaterOrderPage2 },
   name: 'TheaterOrder',
 
   data: () => ({
@@ -110,8 +136,8 @@ export default {
     areaList: [],
 
     selected_area: [],
-    buyer_name: '',
-    line: '',
+    buyer_name: 'test',
+    line: 'test',
     phone: '0911123123',
     note: '',
     isLoading: true,
@@ -129,8 +155,8 @@ export default {
   computed: {
     totalPrice () {
       let total = 0
-      this.areaList.forEach((e, i) => {
-        total += this.selected_area[i] * e.price
+      this.selected_area.map((e, idx)=>{
+        total +=e.num_seats* this.areaList[idx].price
       })
       return total
     }
@@ -155,7 +181,11 @@ export default {
             remainingSeats
           }
         })
-        this.selected_area = this.areaList.map(e => 0)
+        this.selected_area = this.areaList.map(e => ({
+          area_id: e.area_id,
+          area_name: e.name,
+          num_seats: 0
+        }))
         console.log('大資料:',this.areaList);
       } catch (err) {
         console.log('err', err)
@@ -168,24 +198,16 @@ export default {
     async submit () {
       this.$refs.form.validate()
       if (!this.valid) return false
-      let areaAndSeatsList = this.areaList.map((e, idx) => {
-          if(this.selected_area[idx] > 0){
-            return {
-              area_id: e.area_id,
-              num_seats: Number(this.selected_area[idx])
-            }
-          }else return null
-        }).filter(e=>e!==null)
-
+      let areaAndSeatsList = this.selected_area.filter(e=> e.num_seats > 0);
 
       if(areaAndSeatsList.length === 0){
-        toast.error('請選擇座位數')
+        toast.error('請至少選擇1個座位')
         return
       }
 
       const obj = {
         theater_id: this.theater_id,
-        personName: this.personName,
+        buyer_name: this.buyer_name,
         line: this.line,
         num_seats: this.num_seats,
         phone: this.phone,
@@ -194,7 +216,8 @@ export default {
       }
 
       console.log('小資料:',obj);
-
+      
+      
       try {
         this.isLoading = true
 
@@ -224,11 +247,8 @@ export default {
 }
 </script>
 <style scoped>
-.v-data-table :deep(.v-data-table__wrapper .v-data-table__mobile-row){
-  min-height: 24px;
+.bigger{
+  font-size: 24px;
+  color: var(--v-theme-primary);
 }
-:deep(tr.v-data-table__mobile-table-row){
-  margin-top: 18px;
-}
-
 </style>
