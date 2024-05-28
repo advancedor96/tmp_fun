@@ -11,9 +11,8 @@
   />
   <div v-if="page===1">
     <v-img :src="`${$apiUrl}/upload/${image}`" max-width="940"  alt="xx" />
-    <div class="text-h4 mt-3">劇場名稱</div>
-    <div class="text-body-1">{{ name }}</div>
-    <div class="text-h4 mt-3">說明</div>
+    <div class="text-h4 mt-3">{{ name }}</div>
+    <div class="text-h5 mt-3">說明</div>
     <p class="text-body mt-4" style="white-space: pre-wrap;">{{text}} </p>
 
     <v-data-table
@@ -38,8 +37,8 @@
           <v-data-table
             :headers="[
               { title: '區域', key: 'name', width: 200 },
-              { title: '剩餘座位', key: 'remainingSeats', width: 200 },
-              { title: '實際人', key: 'hiddenPeople', width: 200 },
+              { title: '剩餘座位', key: 'remainingSeats', width: 60 },
+              { title: '聯絡人', key: 'hiddenPeople', width: 200 },
             ]"
             :items="areaList"
             :items-per-page="-1"
@@ -49,7 +48,7 @@
             <template v-slot:[`item.hiddenPeople`]="{ item }">
               <div>
                 <v-chip v-for="person in item.personList" :key="person" variant="outlined" class="mr-2 mb-1">
-                    {{ person.buyer_name }} * {{ person.num_seats }}位
+                    {{ maskString(person.buyer_name) }} * {{ person.num_seats }}位
                 </v-chip>
               </div>
             </template>
@@ -71,7 +70,8 @@
             <div v-else-if="e.remainingSeats===0">已售完</div>
           </td>
           <td class="text-right">
-            <v-number-input v-model="selected_area[i].num_seats" :min="0" :max="e.remainingSeats" control-variant="split" variant="outlined" density="compact"  label="" :rules="[val => !!val && val >= 0]" style="max-width: 150px;"></v-number-input>
+            <v-number-input v-model="selected_area[i].num_seats" :min="0" 
+            control-variant="split" variant="outlined" density="compact" @update:modelValue="(val)=>updateNumber(val, i)" label="" :rules="[val => !!val && val >= 0]" style="max-width: 150px;"></v-number-input>
           </td>
         </tr>
         <tr>
@@ -104,7 +104,7 @@
       <v-text-field label="備註" counter maxlength="60" variant="outlined" dense v-model="note"></v-text-field>
       <div class="d-flex justify-space-between">
         <v-btn variant="outlined" color="primary" @click="$router.go(-1)"> 上一頁 </v-btn>
-        <v-btn color="primary" @click="submit"> 送出資料 </v-btn>
+        <v-btn color="primary" @click="clickNext"> 下一步 </v-btn>
       </div>
     </v-form>
   </div>
@@ -112,6 +112,21 @@
   <v-overlay v-model="isLoading" class="align-center justify-center">
     <v-progress-circular indeterminate color="primary" size="64"></v-progress-circular>
   </v-overlay>
+  <v-dialog v-model="confirmDialog" width="auto"  :persistent="true">
+    <v-card max-width="600" title="⚠️確認資料">
+      <v-card-text>
+        <div class="text-h5 text-red-darken-1 mb-3">數量弄錯，全部重來，請看仔細：</div>
+        <div v-for="(area, idx) in neatSelectedArea" :key="area">
+        {{ area.area_name }} * {{ area.num_seats }}張
+        </div>
+      </v-card-text>
+      <v-card-actions>
+        <v-btn text="取消" variant="outlined"  @click="confirmDialog = false"></v-btn>
+        <v-spacer></v-spacer>
+        <v-btn color="primary" variant="outlined" @click="clickConfirm" >確認送出</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </v-container>
 </template>
 
@@ -136,12 +151,13 @@ export default {
     areaList: [],
 
     selected_area: [],
-    buyer_name: 'test',
-    line: 'test',
+    buyer_name: '',
+    line: 'aa',
     phone: '0911123123',
     note: '',
     isLoading: true,
     parent_idx: 0,
+    confirmDialog: false
 
   }),
   computed: {
@@ -159,9 +175,76 @@ export default {
         total +=e.num_seats* this.areaList[idx].price
       })
       return total
+    },
+    neatSelectedArea () {
+      return this.selected_area.filter(e=> e.num_seats > 0);
     }
   },
   methods: {
+
+    updateNumber(val, idx){
+      const selectedSeats = this.selected_area.reduce((total, area)=>(total+area.num_seats), 0);
+      if(selectedSeats >8){
+        toast.info('一人最多8張票')
+        this.selected_area[idx].num_seats = val -1
+      }
+    },
+    async clickNext(){
+      this.$refs.form.validate()
+      if (!this.valid) return false
+
+      if(this.neatSelectedArea.length === 0){
+        this.$swal('請至少選擇1個座位', "", "question")
+        return
+      }
+
+      try {
+        let res = await axios.post('/addTheaterOrderPrecheck', {
+          theater_id: this.theater_id,
+          areaAndSeatsList: this.neatSelectedArea
+        })
+        console.log('res.data:',res);
+        if(res.status == 200){
+          console.log('pre check 成功',);
+          this.confirmDialog = true;
+        }
+      } catch (err) {
+        console.log('回覆',err.response.data);
+        if(err.response.data.status === 'not_enough'){
+          let area_name = err.response.data.area_name
+          let available_seats = err.response.data.available_seats
+          let requested_seats = err.response.data.requested_seats
+          this.$swal('喔喔', `${area_name} 只剩${available_seats}張票，不足您請求的 ${requested_seats} 張。請更新數量`, "info")
+          this.loadPureData();
+        }
+      } 
+      
+    },  
+    clickConfirm(){
+      this.confirmDialog = false
+      this.submit()
+    },
+    async loadPureData () {
+      this.isLoading = true
+      try {
+        const res = await axios.post('/getTheaterDetailById', {
+          theater_id: this.theater_id
+        })
+        const data = res.data
+        this.areaList = data.area_list.map(e=>{
+          const totalNumSeats = e.personList.reduce((total, person) => total + person.num_seats, 0);
+          const remainingSeats = e.max_seats - totalNumSeats;
+          return {
+            ...e,
+            remainingSeats
+          }
+        })
+      } catch (err) {
+        console.log('err', err)
+      } finally {
+        this.isLoading = false
+      }
+    },
     async load () {
       this.isLoading = true
       try {
@@ -198,9 +281,9 @@ export default {
     async submit () {
       this.$refs.form.validate()
       if (!this.valid) return false
-      let areaAndSeatsList = this.selected_area.filter(e=> e.num_seats > 0);
+      // let areaAndSeatsList = this.selected_area.filter(e=> e.num_seats > 0);
 
-      if(areaAndSeatsList.length === 0){
+      if(this.neatSelectedArea.length === 0){
         toast.error('請至少選擇1個座位')
         return
       }
@@ -212,7 +295,7 @@ export default {
         num_seats: this.num_seats,
         phone: this.phone,
         note: this.note,
-        areaAndSeatsList
+        areaAndSeatsList: this.neatSelectedArea
       }
 
       console.log('小資料:',obj);
@@ -237,28 +320,40 @@ export default {
           })
         }
       } catch (err) {
-        if (err.response) {
-          // 服务器响应了请求，但状态码超出了2xx范围
-          if (err.response.status === 400 && err.response.data.success === 0) {
-              const theAreaName = err.response.data.area_name || 'Unknown area';
-              this.$swal('失敗', `${theAreaName}剩餘座位不夠，請刷新頁面`, "error");
-          } else {
-              console.log('err', err.response.data);
-              this.$swal('失敗', '發生了未知錯誤', "error");
-          }
-        } else if (err.request) {
-            // 请求已发送但没有收到响应
-            console.log('Request error', err.request);
-            this.$swal('失敗', '無法連接到伺服器，請檢查您的網絡', "error");
+        console.log('回覆',err.response.data);
+        if (err.response.data.status === 'exceed_8') {
+          this.$swal('失敗', '最多訂購8張', "error");
+        } else if (err.response.data.status === 'not_enough') {
+          let area_name = err.response.data.area_name
+          let available_seats = err.response.data.available_seats
+          let requested_seats = err.response.data.requested_seats
+          this.$swal('喔喔', `${area_name} 只剩${available_seats}張票，不足您請求的 ${requested_seats} 張。請更新頁面`, "error")
         } else {
-            // 处理请求时发生错误
-            console.log('Error', err.message);
-            this.$swal('失敗', '發生了未知錯誤', "error");
+            this.$swal('失敗', '未知錯誤，截圖回報管理員', "error");
         }
-
       } finally {
         this.isLoading = false
       }
+    },
+    maskString(str) {
+      if (str.length <= 1) {
+        return str; // 如果字符串長度小於等於1，則不進行遮罩
+      }
+
+      if (str.length === 2) {
+        // 如果字符串長度為2，將最後一個字符替換為 "*"
+        return str.charAt(0) + '○';
+      }
+      
+      // 提取第一個字符和最後一個字符
+      const firstChar = str.charAt(0);
+      const lastChar = str.charAt(str.length - 1);
+      
+      // 中間的部分固定為 "*"
+      const maskedMiddle = '○';
+      
+      // 拼接結果
+      return firstChar + maskedMiddle + lastChar;
     }
   }
 }

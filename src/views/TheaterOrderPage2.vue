@@ -7,20 +7,22 @@
     </div>
     <div>總金額： NT$ {{totalPrice}}</div>
 
-    <div>姓名： {{buyer_name}}</div>
+    <div>聯絡人： {{buyer_name}}</div>
     <div>聯絡電話： {{phone}}</div>
+    <br />
+    <pre>
+⬇️匯款資訊如下⬇️
+銀行：國泰世華（013）
+帳號：699511096093
 
-    <div>
-    <br /><br />
-    請將以上資訊複製後，<br />
-    用<span style="color: #4CAF50; font-weight: 800;">LINE 回傳</span>給我們，<br />
-    以便確認能夠聯繫到您，<br />
+匯款後請連同此頁面截圖，
+回覆末五碼至LINE 回傳，以便我們對帳，
+若訂購後隔天晚上11:00無收到回傳資料，
+即會刪除此次報名資料。
 
-      ⬇️ FUN星球官方Line連結<br />
-      <a href="https://lin.ee/lpYPloz" target="_blank">https://lin.ee/lpYPloz</a>
-      <br /><br />
-
-    </div>
+⬇️ FUN星球官方Line連結
+<a href="https://lin.ee/lpYPloz" target="_blank">https://lin.ee/lpYPloz</a>
+    </pre>
   </div>
 </template>
 
