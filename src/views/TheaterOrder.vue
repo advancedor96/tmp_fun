@@ -152,8 +152,8 @@ export default {
 
     selected_area: [],
     buyer_name: '',
-    line: 'aa',
-    phone: '0911123123',
+    line: '',
+    phone: '',
     note: '',
     isLoading: true,
     parent_idx: 0,
