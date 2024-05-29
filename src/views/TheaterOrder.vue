@@ -70,7 +70,7 @@
             <div v-else-if="e.remainingSeats===0">已售完</div>
           </td>
           <td class="text-right">
-            <v-number-input v-model="selected_area[i].num_seats" :min="0" 
+            <v-number-input v-model="selected_area[i].num_seats" :min="0" :max="Math.min(e.remainingSeats, 8)"
             control-variant="split" variant="outlined" density="compact" @update:modelValue="(val)=>updateNumber(val, i)" label="" :rules="[val => !!val && val >= 0]" style="max-width: 150px;"></v-number-input>
           </td>
         </tr>
@@ -91,17 +91,17 @@
         variant="outlined"
         density="compact"
         required
-        class="mt-3"
+        class="mt-5"
         style="height: 51px;"
       ></v-text-field>
 
       <v-text-field label="LINE名稱" variant="outlined" density="compact" v-model="line"
-          :rules="[val => (val || '').length > 0 || '必填']" required
+          :rules="[val => (val || '').length > 0 || '必填']" required class="mt-4"
       ></v-text-field>
-      <v-text-field label="電話" variant="outlined" density="compact" v-model="phone"
+      <v-text-field label="電話" variant="outlined" density="compact" v-model="phone" class="mt-3"
         :rules="[val => (val || '').length > 0 || '必填', val => val.length === 10 || '手機號碼須為10個數字']" required
       ></v-text-field>
-      <v-text-field label="備註" counter maxlength="60" variant="outlined" dense v-model="note"></v-text-field>
+      <v-text-field label="備註" counter maxlength="60" variant="outlined" dense v-model="note" class="mt-3"></v-text-field>
       <div class="d-flex justify-space-between">
         <v-btn variant="outlined" color="primary" @click="$router.go(-1)"> 上一頁 </v-btn>
         <v-btn color="primary" @click="clickNext"> 下一步 </v-btn>
@@ -115,7 +115,7 @@
   <v-dialog v-model="confirmDialog" width="auto"  :persistent="true">
     <v-card max-width="600" title="⚠️確認資料">
       <v-card-text>
-        <div class="text-h5 text-red-darken-1 mb-3">數量弄錯，全部重來，請看仔細：</div>
+        <div class="text-h5 text-red-darken-1 mb-3">請檢查您選擇的區域和張數再送出，訂錯的話要全部重來哦～</div>
         <div v-for="(area, idx) in neatSelectedArea" :key="area">
         {{ area.area_name }} * {{ area.num_seats }}張
         </div>
