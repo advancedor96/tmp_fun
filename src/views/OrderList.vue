@@ -12,7 +12,7 @@
   <v-row class="mb-15 justify-center justify-md-space-between justify-sm-center">
     <v-card elevation="2" v-for="(item, i) in sList" :key="i" class="mt-4 mx-2" width="370"
     @click="showItem(item)">
-      <v-img cover :src="`${$apiUrl}/upload/${item.image}`" max-width="940" min-height="370">
+      <v-img cover :src="`${$apiUrl}/upload/${item.image}`" aspect-ratio="4/3" max-width="828" >
         <template v-slot:error>
           <v-img class="mx-auto" height="300" max-width="500" src="https://upload.wikimedia.org/wikipedia/commons/6/65/No-Image-Placeholder.svg"
           ></v-img>
